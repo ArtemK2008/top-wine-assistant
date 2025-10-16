@@ -5,6 +5,7 @@ on:
     branches: [ main, master, develop, 'feature/**' ]
   pull_request:
     branches: [ main, master, develop ]
+  workflow_dispatch: {}   # lets you run it manually from the Actions tab
 
 jobs:
   build:
@@ -32,7 +33,7 @@ jobs:
       - name: Build & test
         run: ./gradlew --no-daemon clean test build
 
-      # Always collect test reports (even if tests fail)
+      # Always keep test report as artifact (handy when tests fail)
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
@@ -40,7 +41,7 @@ jobs:
           name: junit-report
           path: build/reports/tests/test
 
-      # Optional: keep the built jar as an artifact
+      # Optional: keep the built JAR
       - name: Upload jar
         if: success()
         uses: actions/upload-artifact@v4
