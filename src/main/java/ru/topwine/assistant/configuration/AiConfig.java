@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
-import ru.topwine.assistant.ai.ChatClient;
-import ru.topwine.assistant.ai.impl.OpenAiStyleChatClient;
+import ru.topwine.assistant.http.client.ChatClient;
+import ru.topwine.assistant.http.client.OpenAiStyleChatClient;
 
 import java.time.Duration;
 
@@ -22,7 +22,7 @@ public class AiConfig {
     @Qualifier("llmWebClient")
     public WebClient llmWebClient(WebClient.Builder builder) {
         HttpClient httpClient = HttpClient.create()
-                .responseTimeout(Duration.ofSeconds(30))
+                .responseTimeout(Duration.ofSeconds(aiProps.timeoutSeconds()))
                 .wiretap(true);
 
         return builder
@@ -38,6 +38,6 @@ public class AiConfig {
 
     @Bean
     public ChatClient chatClient(@Qualifier("llmWebClient") WebClient llmWebClient) {
-        return new OpenAiStyleChatClient(llmWebClient, aiProps.apiKey());
+        return new OpenAiStyleChatClient(llmWebClient, aiProps.timeoutSeconds());
     }
 }

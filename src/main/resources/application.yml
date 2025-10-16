@@ -7,6 +7,9 @@ ai:
   base-url: http://localhost:11434/v1
   model: mistral
   api-key: ""
+  timeout-seconds: 20
+  max-tokens: 300
+  temperature: 0.5
 
 logging:
   level:

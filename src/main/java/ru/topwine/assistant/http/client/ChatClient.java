@@ -1,4 +1,4 @@
-package ru.topwine.assistant.ai;
+package ru.topwine.assistant.http.client;
 
 import reactor.core.publisher.Mono;
 import ru.topwine.assistant.http.request.OpenAiChatCompletionsRequest;
