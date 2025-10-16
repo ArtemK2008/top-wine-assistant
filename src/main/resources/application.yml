@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: Top Wine Assistant
+
+ai:
+  provider: ollama
+  base-url: http://localhost:11434/v1
+  model: mistral
+  api-key: ""
+
+logging:
+  level:
+    ru.topwine.assistant: INFO
+    org.springframework.web.reactive.function.client: DEBUG
+    reactor.netty.http.client: DEBUG
