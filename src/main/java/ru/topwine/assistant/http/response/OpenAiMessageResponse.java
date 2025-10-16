@@ -5,6 +5,5 @@ import lombok.Builder;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
-public record OpenAiChoiceResponse(OpenAiMessageResponse message) {
+public record OpenAiMessageResponse(String role, String content) {
 }
-
