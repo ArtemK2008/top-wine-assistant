@@ -5,11 +5,14 @@ spring:
 ai:
   provider: ollama
   base-url: http://localhost:11434/v1
-  model: mistral
+  #  model: mistral
+  #  model: llama3.1:8b
+  #  model: qwen2.5:7b-instruct
+  model: qwen3:8b
   api-key: ""
   timeout-seconds: 20
-  max-tokens: 300
-  temperature: 0.5
+  max-tokens: 512
+  temperature: 0.4
 
 logging:
   level:

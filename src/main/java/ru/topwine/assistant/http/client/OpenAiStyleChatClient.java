@@ -57,7 +57,7 @@ public class OpenAiStyleChatClient implements ChatClient {
                         ))
                 .map(response -> response == null
                         ? "Модель не вернула ответ."
-                        : response.firstMessageContent().orElse("Пустой ответ от модели."));
+                        : response.firstNonBlankMessageContent().orElse("Пустой ответ от модели."));
     }
 
     private boolean isTimeoutThrowable(Throwable throwable) {

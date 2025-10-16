@@ -14,6 +14,16 @@ public record OpenAiChatCompletionsResponse(List<OpenAiChoiceResponse> choices) 
         if (choices == null || choices.isEmpty()) return Optional.empty();
         OpenAiChoiceResponse first = choices.getFirst();
         if (first == null || first.message() == null) return Optional.empty();
-        return Optional.ofNullable(first.message().content());
+        String text = first.message().content();
+        return (text != null && !text.isBlank()) ? Optional.of(text) : Optional.empty();
+    }
+
+    public Optional<String> firstNonBlankMessageContent() {
+        if (choices == null) return Optional.empty();
+        return choices.stream()
+                .map(OpenAiChoiceResponse::message)
+                .filter(m -> m != null && m.content() != null && !m.content().isBlank())
+                .map(OpenAiMessageResponse::content)
+                .findFirst();
     }
 }
