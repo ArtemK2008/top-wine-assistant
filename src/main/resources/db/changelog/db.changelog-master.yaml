@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0000-warmup
+      author: system
+      changes:
+        - tagDatabase:
+            tag: init
