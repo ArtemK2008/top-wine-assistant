@@ -2,7 +2,6 @@ package ru.topwine.assistant.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 import ru.topwine.assistant.configuration.AiProps;
 import ru.topwine.assistant.guard.AdviceContext;
 import ru.topwine.assistant.guard.AdviceFilterChain;
@@ -51,17 +50,13 @@ public class SommelierServiceImpl implements SommelierService {
     private final AdviceFilterChain filterChain;
 
     @Override
-    public Mono<String> advise(String userMessage) {
+    public String advise(String userMessage) {
         AdviceContext context = new AdviceContext(userMessage);
 
         Optional<String> earlyReply = filterChain.run(context);
         if (earlyReply.isPresent()) {
-            return Mono.just(earlyReply.get());
+            return earlyReply.get();
         }
-
-        int logicalCpus = Runtime.getRuntime().availableProcessors();
-        int threads = Math.max(1, logicalCpus - 1);
-        threads = Math.min(threads, 16);
 
         OpenAiChatCompletionsRequest request = OpenAiRequestFactory.build(
                 aiProps.model(),

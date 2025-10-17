@@ -5,11 +5,31 @@ on:
     branches: [ main, master, develop, 'feature/**' ]
   pull_request:
     branches: [ main, master, develop ]
-  workflow_dispatch: {}
+  workflow_dispatch: { }
+
+env:
+  SPRING_PROFILES_ACTIVE: dev
+  DB_HOST: postgres
+  DB_PORT: 5432
+  DB_NAME: topwine
+  DB_USER: topwine
+  DB_PASSWORD: topwine
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: topwine
+          POSTGRES_USER: topwine
+          POSTGRES_PASSWORD: topwine
+        options: >-
+          --health-cmd="pg_isready -U topwine -d topwine"
+          --health-interval=5s --health-timeout=3s --health-retries=5
+        # no "ports" needed when using service DNS name
+
     permissions:
       contents: read
 
@@ -24,13 +44,11 @@ jobs:
           java-version: '21'
           cache: gradle
 
-      # ---- FIX gradlew on Linux runners ----
       - name: Normalize gradlew line endings & make executable
         run: |
           sed -i 's/\r$//' gradlew
           chmod +x gradlew
 
-      # (optional) light wrapper check; skip if flaky
       - name: Gradle version
         run: ./gradlew --version
 

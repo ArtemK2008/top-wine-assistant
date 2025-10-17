@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 import ru.topwine.assistant.exception.GlobalExceptionHandler;
 import ru.topwine.assistant.exception.TopWineException;
 import ru.topwine.assistant.model.ChatRequest;
@@ -32,8 +31,7 @@ class ChatControllerExceptionTest {
     @DisplayName("given непредвиденная ошибка when POST /api/chat then 500 и JSON с code=1999")
     void given_unexpected_error_when_chat_then_500_and_json_body() {
         Mockito.when(sommelierService.advise(anyString()))
-                .thenReturn(Mono.error(new TopWineException(
-                        TopWineException.Kind.PROVIDER_TIMEOUT, 30)));
+                .thenThrow(new TopWineException(TopWineException.Kind.PROVIDER_TIMEOUT, 30));
 
         ChatRequest request = new ChatRequest("steak");
 
