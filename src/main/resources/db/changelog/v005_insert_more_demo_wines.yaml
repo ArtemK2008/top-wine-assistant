@@ -1,0 +1,333 @@
+databaseChangeLog:
+  - changeSet:
+      id: v005-insert-more-demo-wines
+      author: you
+      context: dev
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        dbms:
+          type: postgresql
+
+      changes:
+        # ===== WINE ITEMS =====
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 5 }
+              - { name: wine_name, value: "Пино Нуар" }
+              - { name: producer_name, value: "A to Z Wineworks" }
+              - { name: country_name, value: "США" }
+              - { name: region_name, value: "Орегон" }
+              - { name: grape_varieties, value: "Пино Нуар" }
+              - { name: wine_color, value: "red" }
+              - { name: vintage_year, valueNumeric: 2021 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 13.0 }
+              - { name: description_notes, value: "Лёгкое красное с вишней, клюквой и лёгкими пряностями" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 6 }
+              - { name: wine_name, value: "Риоха Крианса" }
+              - { name: producer_name, value: "CVNE" }
+              - { name: country_name, value: "Испания" }
+              - { name: region_name, value: "Риоха" }
+              - { name: grape_varieties, value: "Темпранильо" }
+              - { name: wine_color, value: "red" }
+              - { name: vintage_year, valueNumeric: 2020 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 13.5 }
+              - { name: description_notes, value: "Слива, ваниль, мягкие дубовые ноты" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 7 }
+              - { name: wine_name, value: "Божоле-Вилляж" }
+              - { name: producer_name, value: "Жорж Дюбёф" }
+              - { name: country_name, value: "Франция" }
+              - { name: region_name, value: "Божоле" }
+              - { name: grape_varieties, value: "Гамэ" }
+              - { name: wine_color, value: "red" }
+              - { name: vintage_year, valueNumeric: 2022 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 12.5 }
+              - { name: description_notes, value: "Сочное, лёгкое, малина и фиалка" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 8 }
+              - { name: wine_name, value: "Барбера д’Асти Тре Винье" }
+              - { name: producer_name, value: "Вьетти" }
+              - { name: country_name, value: "Италия" }
+              - { name: region_name, value: "Пьемонт" }
+              - { name: grape_varieties, value: "Барбера" }
+              - { name: wine_color, value: "red" }
+              - { name: vintage_year, valueNumeric: 2021 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 14.0 }
+              - { name: description_notes, value: "Вишня, слива, живая кислотность" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 9 }
+              - { name: wine_name, value: "Мальбек" }
+              - { name: producer_name, value: "Катена" }
+              - { name: country_name, value: "Аргентина" }
+              - { name: region_name, value: "Мендоса" }
+              - { name: grape_varieties, value: "Мальбек" }
+              - { name: wine_color, value: "red" }
+              - { name: vintage_year, valueNumeric: 2020 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 13.5 }
+              - { name: description_notes, value: "Чёрная смородина, какао, мягкие танины" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 10 }
+              - { name: wine_name, value: "Брунелло ди Монтальчино" }
+              - { name: producer_name, value: "Капарцо" }
+              - { name: country_name, value: "Италия" }
+              - { name: region_name, value: "Тоскана" }
+              - { name: grape_varieties, value: "Санджовезе" }
+              - { name: wine_color, value: "red" }
+              - { name: vintage_year, valueNumeric: 2018 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 14.0 }
+              - { name: description_notes, value: "Вишня мараска, кожа, специи — структурное" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 11 }
+              - { name: wine_name, value: "Шабли" }
+              - { name: producer_name, value: "Уильям Февр" }
+              - { name: country_name, value: "Франция" }
+              - { name: region_name, value: "Бургундия" }
+              - { name: grape_varieties, value: "Шардоне" }
+              - { name: wine_color, value: "white" }
+              - { name: vintage_year, valueNumeric: 2022 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 12.5 }
+              - { name: description_notes, value: "Минералка, зелёное яблоко, без дуба" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 12 }
+              - { name: wine_name, value: "Альбариньо" }
+              - { name: producer_name, value: "Пасо де Сеньорас" }
+              - { name: country_name, value: "Испания" }
+              - { name: region_name, value: "Риас Байшас" }
+              - { name: grape_varieties, value: "Альбариньо" }
+              - { name: wine_color, value: "white" }
+              - { name: vintage_year, valueNumeric: 2021 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 12.5 }
+              - { name: description_notes, value: "Соль, лайм, белые цветы — отлично к морепродуктам" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 13 }
+              - { name: wine_name, value: "Грюнер Вельтлинер" }
+              - { name: producer_name, value: "Прагeр" }
+              - { name: country_name, value: "Австрия" }
+              - { name: region_name, value: "Вахау" }
+              - { name: grape_varieties, value: "Грюнер Вельтлинер" }
+              - { name: wine_color, value: "white" }
+              - { name: vintage_year, valueNumeric: 2022 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 12.5 }
+              - { name: description_notes, value: "Зелёный перец, груша, минеральность" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 14 }
+              - { name: wine_name, value: "Вуврэ Деми-Сек" }
+              - { name: producer_name, value: "Домен Юэ" }
+              - { name: country_name, value: "Франция" }
+              - { name: region_name, value: "Долина Луары" }
+              - { name: grape_varieties, value: "Шенен Блан" }
+              - { name: wine_color, value: "white" }
+              - { name: vintage_year, valueNumeric: 2020 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 12.0 }
+              - { name: description_notes, value: "Яблоко, мёд, нежная сладость и кислотность" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 15 }
+              - { name: wine_name, value: "Совиньон Блан" }
+              - { name: producer_name, value: "Паскаль Жоливе" }
+              - { name: country_name, value: "Франция" }
+              - { name: region_name, value: "Сансер" }
+              - { name: grape_varieties, value: "Совиньон Блан" }
+              - { name: wine_color, value: "white" }
+              - { name: vintage_year, valueNumeric: 2022 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 13.0 }
+              - { name: description_notes, value: "Цитрус, крыжовник, травяные ноты, хрустящая кислотность" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 16 }
+              - { name: wine_name, value: "Пино Гриджо" }
+              - { name: producer_name, value: "Санта Маргерита" }
+              - { name: country_name, value: "Италия" }
+              - { name: region_name, value: "Альто Адидже" }
+              - { name: grape_varieties, value: "Пино Гриджо" }
+              - { name: wine_color, value: "white" }
+              - { name: vintage_year, valueNumeric: 2022 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 12.5 }
+              - { name: description_notes, value: "Груша, лимон, лёгкое и сухое" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 17 }
+              - { name: wine_name, value: "Суаре Классико" }
+              - { name: producer_name, value: "Пьеропан" }
+              - { name: country_name, value: "Италия" }
+              - { name: region_name, value: "Венето" }
+              - { name: grape_varieties, value: "Гарганега" }
+              - { name: wine_color, value: "white" }
+              - { name: vintage_year, valueNumeric: 2021 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 12.0 }
+              - { name: description_notes, value: "Нежный миндаль, персик, минеральность" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 18 }
+              - { name: wine_name, value: "Розе Прованс" }
+              - { name: producer_name, value: "Мираваль" }
+              - { name: country_name, value: "Франция" }
+              - { name: region_name, value: "Прованс" }
+              - { name: grape_varieties, value: "Гренаш, Синсо, Роле" }
+              - { name: wine_color, value: "rose" }
+              - { name: vintage_year, valueNumeric: 2023 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 13.0 }
+              - { name: description_notes, value: "Клубника, персик, сухое и освежающее" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 19 }
+              - { name: wine_name, value: "Просекко DOC" }
+              - { name: producer_name, value: "Ла Марка" }
+              - { name: country_name, value: "Италия" }
+              - { name: region_name, value: "Венето" }
+              - { name: grape_varieties, value: "Глера" }
+              - { name: wine_color, value: "sparkling" }
+              - { name: vintage_year, valueNumeric: 0 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 11.0 }
+              - { name: description_notes, value: "Лёгкое игристое, зелёное яблоко и белые цветы" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 20 }
+              - { name: wine_name, value: "Кава Брют" }
+              - { name: producer_name, value: "Фрехенет" }
+              - { name: country_name, value: "Испания" }
+              - { name: region_name, value: "Пенедес" }
+              - { name: grape_varieties, value: "Макабео, Парельяда, Ксарелло" }
+              - { name: wine_color, value: "sparkling" }
+              - { name: vintage_year, valueNumeric: 0 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 11.5 }
+              - { name: description_notes, value: "Цитрус, миндаль, кремнистая пенистость" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 21 }
+              - { name: wine_name, value: "Шампанское Брют Империаль" }
+              - { name: producer_name, value: "Moët & Chandon" }
+              - { name: country_name, value: "Франция" }
+              - { name: region_name, value: "Шампань" }
+              - { name: grape_varieties, value: "Пино Нуар, Пино Менье, Шардоне" }
+              - { name: wine_color, value: "sparkling" }
+              - { name: vintage_year, valueNumeric: 0 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 12.0 }
+              - { name: description_notes, value: "Яблоко, бриошь, мелкие пузырьки" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 22 }
+              - { name: wine_name, value: "Шираз" }
+              - { name: producer_name, value: "Пенфолдс Кунунгара" }
+              - { name: country_name, value: "Австралия" }
+              - { name: region_name, value: "Южная Австралия" }
+              - { name: grape_varieties, value: "Шираз" }
+              - { name: wine_color, value: "red" }
+              - { name: vintage_year, valueNumeric: 2020 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 14.5 }
+              - { name: description_notes, value: "Чёрный перец, ежевика, шоколад" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 23 }
+              - { name: wine_name, value: "Кьянти" }
+              - { name: producer_name, value: "Фрескобальди" }
+              - { name: country_name, value: "Италия" }
+              - { name: region_name, value: "Тоскана" }
+              - { name: grape_varieties, value: "Санджовезе" }
+              - { name: wine_color, value: "red" }
+              - { name: vintage_year, valueNumeric: 2021 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 13.0 }
+              - { name: description_notes, value: "Вишня, сушёные травы, среднее тело" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - { name: id, valueNumeric: 24 }
+              - { name: wine_name, value: "Шардоне Резерв" }
+              - { name: producer_name, value: "Кендэлл-Джексон" }
+              - { name: country_name, value: "США" }
+              - { name: region_name, value: "Калифорния" }
+              - { name: grape_varieties, value: "Шардоне" }
+              - { name: wine_color, value: "white" }
+              - { name: vintage_year, valueNumeric: 2021 }
+              - { name: bottle_size_ml, valueNumeric: 750 }
+              - { name: alcohol_by_volume, valueNumeric: 13.5 }
+              - { name: description_notes, value: "Тропические фрукты, ваниль, сливочность" }
+
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 5 },  { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 9 },  { name: price_rub, valueNumeric: 2100.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 6 },  { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 7 },  { name: price_rub, valueNumeric: 1800.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 7 },  { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 10 }, { name: price_rub, valueNumeric: 1600.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 8 },  { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 6 },  { name: price_rub, valueNumeric: 2200.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 9 },  { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 8 },  { name: price_rub, valueNumeric: 2300.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 10 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 4 },  { name: price_rub, valueNumeric: 4800.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 11 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 12 }, { name: price_rub, valueNumeric: 2600.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 12 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 5 },  { name: price_rub, valueNumeric: 2400.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 13 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 7 },  { name: price_rub, valueNumeric: 2500.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 14 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 6 },  { name: price_rub, valueNumeric: 2700.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 15 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 11 }, { name: price_rub, valueNumeric: 3100.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 16 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 10 }, { name: price_rub, valueNumeric: 2000.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 17 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 9 },  { name: price_rub, valueNumeric: 2300.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 18 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 15 }, { name: price_rub, valueNumeric: 2200.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 19 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 20 }, { name: price_rub, valueNumeric: 1900.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 20 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 18 }, { name: price_rub, valueNumeric: 1700.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 21 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 6 },  { name: price_rub, valueNumeric: 6500.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 22 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 8 },  { name: price_rub, valueNumeric: 2600.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 23 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 7 },  { name: price_rub, valueNumeric: 2000.00 } ] }
+        - insert: { tableName: wine_stock, columns: [ { name: wine_id, valueNumeric: 24 }, { name: location_name, value: "Ресторан" }, { name: quantity_bottles, valueNumeric: 10 }, { name: price_rub, valueNumeric: 2900.00 } ] }
