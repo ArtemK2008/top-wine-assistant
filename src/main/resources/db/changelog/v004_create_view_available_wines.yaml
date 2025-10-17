@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: v004-create-view-available-wines
+      author: you
+
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - dbms:
+              type: postgresql
+
+      changes:
+        - createView:
+            viewName: v_available_wines
+            replaceIfExists: true
+            remarks: "Доступные к продаже вина (только позиции с остатком > 0)"
+            selectQuery: |
+              SELECT
+                  s.id                         AS stock_id,
+                  i.id                         AS wine_id,
+                  i.wine_name,
+                  i.producer_name,
+                  i.country_name,
+                  i.region_name,
+                  i.grape_varieties,
+                  i.wine_color,
+                  i.vintage_year,
+                  i.bottle_size_ml,
+                  i.alcohol_by_volume,
+                  s.quantity_bottles,
+                  s.price_rub,
+                  i.tags_json,
+                  i.description_notes,
+                  i.created_at                 AS wine_created_at,
+                  i.updated_at                 AS wine_updated_at,
+                  s.updated_at                 AS stock_updated_at
+              FROM wine_item i
+              JOIN wine_stock s ON s.wine_id = i.id
+              WHERE s.quantity_bottles > 0
+
+      rollback:
+        - dropView:
+            viewName: v_available_wines
