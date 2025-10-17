@@ -40,17 +40,6 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.test {
-    testLogging {
-        events "passed", "skipped", "failed"
-        showStandardStreams = true
-        exceptionFormat "full"
-        showExceptions = true
-        showCauses = true
-        showStackTraces = true
-    }
-    reports {
-        junitXml.required = true
-        html.required = true
-    }
+tasks.named('test') {
+    useJUnitPlatform()
 }
