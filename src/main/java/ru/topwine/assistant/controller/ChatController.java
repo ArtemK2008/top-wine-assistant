@@ -19,7 +19,7 @@ public class ChatController {
 
     private final SommelierService sommelier;
 
-    @PostMapping("/chat")
+    @PostMapping(value = "/chat", produces = "application/json; charset=UTF-8")
     public ResponseEntity<ChatResponse> chat(@Valid @RequestBody ChatRequest req) {
         String advice = sommelier.advise(req.message());
         return ResponseEntity.ok(new ChatResponse(advice));

@@ -14,3 +14,6 @@ databaseChangeLog:
       file: db/changelog/v003_insert_demo_wines.yaml
   - include:
       file: db/changelog/v004_create_view_available_wines.yaml
+  - include:
+      file: db/changelog/v005_insert_more_demo_wines.yaml
+      relativeToChangelogFile: true

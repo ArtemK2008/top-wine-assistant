@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Доступные вина</title>
+    <style>
+        :root {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        }
+
+        body {
+            margin: 20px;
+        }
+
+        h1 {
+            margin: 0 0 16px;
+            font-size: 22px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .filters input, .filters select {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .table-wrap {
+            overflow: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background: #f8fafc;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        tr:hover {
+            background: #fcfcfd;
+        }
+
+        .pill {
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: #eef2ff;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+<h1>Доступные вина (остаток &gt; 0)</h1>
+
+<div class="filters">
+    <select id="color">
+        <option value="">Цвет: любой</option>
+        <option value="red">красное</option>
+        <option value="white">белое</option>
+        <option value="rose">розе</option>
+        <option value="orange">оранжевое</option>
+    </select>
+    <input id="country" placeholder="Страна"/>
+    <input id="region" placeholder="Регион"/>
+    <input id="grape" placeholder="Сорт/купаж"/>
+    <input id="price" type="number" min="0" step="100" placeholder="Макс. цена ₽"/>
+    <button id="apply">Применить</button>
+    <span class="muted" id="count"></span>
+</div>
+
+<div class="table-wrap">
+    <table id="grid">
+        <thead>
+        <tr>
+            <th data-sort="wine_name">Вино</th>
+            <th data-sort="producer_name">Производитель</th>
+            <th data-sort="country_name">Страна</th>
+            <th data-sort="region_name">Регион</th>
+            <th data-sort="wine_color">Цвет</th>
+            <th data-sort="grape_varieties">Сорт(а)</th>
+            <th data-sort="vintage_year">Год</th>
+            <th data-sort="bottle_size_ml">Объём</th>
+            <th data-sort="price_rub">Цена</th>
+            <th data-sort="quantity_bottles">Остаток</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    const state = {sortKey: 'price_rub', sortDir: 'asc'};
+
+    function rub(n) {
+        if (n == null) return '—';
+        return new Intl.NumberFormat('ru-RU').format(Number(n)) + ' ₽';
+    }
+
+    function load() {
+        const params = new URLSearchParams();
+        const color = document.getElementById('color').value;
+        const country = document.getElementById('country').value.trim();
+        const region = document.getElementById('region').value.trim();
+        const grape = document.getElementById('grape').value.trim();
+        const price = document.getElementById('price').value;
+
+        if (color) params.set('color', color);
+        if (country) params.set('country', country);
+        if (region) params.set('region', region);
+        if (grape) params.set('grape', grape);
+        if (price) params.set('maxPriceRub', price);
+        params.set('limit', '500');
+
+        fetch('/api/available-wines?' + params.toString(), {headers: {'Accept': 'application/json'}})
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('count').textContent = `Найдено: ${data.length}`;
+                render(data);
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Не удалось загрузить список вин');
+            });
+    }
+
+    function render(rows) {
+        const tbody = document.querySelector('#grid tbody');
+        const {sortKey, sortDir} = state;
+        rows.sort((a, b) => {
+            const va = a[sortKey];
+            const vb = b[sortKey];
+            if (va == null && vb == null) return 0;
+            if (va == null) return 1;
+            if (vb == null) return -1;
+            if (typeof va === 'number' && typeof vb === 'number') {
+                return sortDir === 'asc' ? va - vb : vb - va;
+            }
+            return sortDir === 'asc'
+                ? String(va).localeCompare(String(vb), 'ru')
+                : String(vb).localeCompare(String(va), 'ru');
+        });
+
+        tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td><strong>${escapeHtml(r.wine_name)}</strong>${r.description_notes ? `<div class="muted">${escapeHtml(r.description_notes)}</div>` : ''}</td>
+          <td>${escapeHtml(r.producer_name || '—')}</td>
+          <td>${escapeHtml(r.country_name || '—')}</td>
+          <td>${escapeHtml(r.region_name || '—')}</td>
+          <td><span class="pill">${escapeHtml(r.wine_color || '—')}</span></td>
+          <td>${escapeHtml(r.grape_varieties || '—')}</td>
+          <td>${r.vintage_year ?? '—'}</td>
+          <td>${r.bottle_size_ml ? r.bottle_size_ml + ' мл' : '—'}</td>
+          <td>${rub(r.price_rub)}</td>
+          <td>${r.quantity_bottles ?? '—'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function escapeHtml(s) {
+        return String(s ?? '').replace(/[&<>"']/g, ch =>
+            ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch]));
+    }
+
+    document.getElementById('apply').addEventListener('click', load);
+    document.querySelectorAll('th[data-sort]').forEach(th => {
+        th.addEventListener('click', () => {
+            const key = th.dataset.sort;
+            if (state.sortKey === key) {
+                state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                state.sortKey = key;
+                state.sortDir = 'asc';
+            }
+            load();
+        });
+    });
+
+    load();
+</script>
+</body>
+</html>
