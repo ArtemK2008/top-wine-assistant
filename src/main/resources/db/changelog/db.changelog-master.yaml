@@ -15,4 +15,6 @@ databaseChangeLog:
   - include:
       file: db/changelog/v004_create_view_available_wines.yaml
   - include:
+      file: db/changelog/v004a_extend_wine_color.yaml
+  - include:
       file: db/changelog/v005_insert_more_demo_wines.yaml

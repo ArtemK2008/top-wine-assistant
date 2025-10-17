@@ -81,6 +81,7 @@
         <option value="white">белое</option>
         <option value="rose">розе</option>
         <option value="orange">оранжевое</option>
+        <option value="sparkling">игристое</option>
     </select>
     <input id="country" placeholder="Страна"/>
     <input id="region" placeholder="Регион"/>
@@ -94,16 +95,16 @@
     <table id="grid">
         <thead>
         <tr>
-            <th data-sort="wine_name">Вино</th>
-            <th data-sort="producer_name">Производитель</th>
-            <th data-sort="country_name">Страна</th>
-            <th data-sort="region_name">Регион</th>
-            <th data-sort="wine_color">Цвет</th>
-            <th data-sort="grape_varieties">Сорт(а)</th>
-            <th data-sort="vintage_year">Год</th>
-            <th data-sort="bottle_size_ml">Объём</th>
-            <th data-sort="price_rub">Цена</th>
-            <th data-sort="quantity_bottles">Остаток</th>
+            <th data-sort="wineName">Вино</th>
+            <th data-sort="producerName">Производитель</th>
+            <th data-sort="countryName">Страна</th>
+            <th data-sort="regionName">Регион</th>
+            <th data-sort="wineColor">Цвет</th>
+            <th data-sort="grapeVarieties">Сорт(а)</th>
+            <th data-sort="vintageYear">Год</th>
+            <th data-sort="bottleSizeMl">Объём</th>
+            <th data-sort="priceRub">Цена</th>
+            <th data-sort="quantityBottles">Остаток</th>
         </tr>
         </thead>
         <tbody></tbody>
@@ -111,7 +112,7 @@
 </div>
 
 <script>
-    const state = {sortKey: 'price_rub', sortDir: 'asc'};
+    const state = {sortKey: 'priceRub', sortDir: 'asc'};
 
     function rub(n) {
         if (n == null) return '—';
@@ -163,19 +164,19 @@
         });
 
         tbody.innerHTML = rows.map(r => `
-        <tr>
-          <td><strong>${escapeHtml(r.wine_name)}</strong>${r.description_notes ? `<div class="muted">${escapeHtml(r.description_notes)}</div>` : ''}</td>
-          <td>${escapeHtml(r.producer_name || '—')}</td>
-          <td>${escapeHtml(r.country_name || '—')}</td>
-          <td>${escapeHtml(r.region_name || '—')}</td>
-          <td><span class="pill">${escapeHtml(r.wine_color || '—')}</span></td>
-          <td>${escapeHtml(r.grape_varieties || '—')}</td>
-          <td>${r.vintage_year ?? '—'}</td>
-          <td>${r.bottle_size_ml ? r.bottle_size_ml + ' мл' : '—'}</td>
-          <td>${rub(r.price_rub)}</td>
-          <td>${r.quantity_bottles ?? '—'}</td>
-        </tr>
-      `).join('');
+  <tr>
+    <td><strong>${escapeHtml(r.wineName)}</strong>${r.descriptionNotes ? `<div class="muted">${escapeHtml(r.descriptionNotes)}</div>` : ''}</td>
+    <td>${escapeHtml(r.producerName || '—')}</td>
+    <td>${escapeHtml(r.countryName || '—')}</td>
+    <td>${escapeHtml(r.regionName || '—')}</td>
+    <td><span class="pill">${escapeHtml(r.wineColor || '—')}</span></td>
+    <td>${escapeHtml(r.grapeVarieties || '—')}</td>
+    <td>${r.vintageYear ?? '—'}</td>
+    <td>${r.bottleSizeMl ? r.bottleSizeMl + ' мл' : '—'}</td>
+    <td>${rub(r.priceRub)}</td>
+    <td>${r.quantityBottles ?? '—'}</td>
+  </tr>
+`).join('');
     }
 
     function escapeHtml(s) {
