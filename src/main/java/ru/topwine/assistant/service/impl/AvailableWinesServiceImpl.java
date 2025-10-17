@@ -40,6 +40,10 @@ public class AvailableWinesServiceImpl implements AvailableWinesService {
         else if (normalized.contains("бел")) detectedColor = "white";
         else if (normalized.contains("розе") || normalized.contains("розов")) detectedColor = "rose";
         else if (normalized.contains("оранж")) detectedColor = "orange";
+        else if (normalized.contains("игрист")
+                 || normalized.contains("шампан")
+                 || normalized.contains("просекко")
+                 || normalized.contains("кава")) detectedColor = "sparkling";
 
         Integer detectedBudgetRub = null;
         // Ищем числа «до 1500», «1500 руб», «1500р», «<= 1500» и т.п.
