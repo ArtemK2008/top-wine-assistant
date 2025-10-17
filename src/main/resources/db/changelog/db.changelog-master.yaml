@@ -5,3 +5,6 @@ databaseChangeLog:
       changes:
         - tagDatabase:
             tag: init
+
+  - include:
+      file: db/changelog/v001_create_wine_item.yaml

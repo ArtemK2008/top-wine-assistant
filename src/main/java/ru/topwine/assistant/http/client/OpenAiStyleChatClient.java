@@ -72,7 +72,6 @@ public class OpenAiStyleChatClient implements ChatClient {
     }
 
     private boolean isTimeoutThrowable(Throwable t) {
-        // direct matches
         if (t instanceof TimeoutException) return true;
         if (t instanceof HttpTimeoutException) return true;
         if (t instanceof SocketTimeoutException) return true;
