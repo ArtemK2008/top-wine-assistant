@@ -1,0 +1,100 @@
+databaseChangeLog:
+  - changeSet:
+      id: v003-insert-demo-wines
+      author: you
+      context: dev
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        dbms:
+          type: postgresql
+
+      changes:
+        - insert:
+            tableName: wine_item
+            columns:
+              - column: { name: id, valueNumeric: 1 }
+              - column: { name: wine_name, value: "Кьянти Классико" }
+              - column: { name: producer_name, value: "Руффино" }
+              - column: { name: country_name, value: "Италия" }
+              - column: { name: region_name, value: "Тоскана" }
+              - column: { name: grape_varieties, value: "Санджовезе" }
+              - column: { name: wine_color, value: "red" }
+              - column: { name: vintage_year, valueNumeric: 2020 }
+              - column: { name: alcohol_by_volume, valueNumeric: 13.5 }
+              - column: { name: description_notes, value: "Среднетелое красное вино с ароматом вишни и трав" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - column: { name: id, valueNumeric: 2 }
+              - column: { name: wine_name, value: "Рислинг Кабинет" }
+              - column: { name: producer_name, value: "Доктор Лузен" }
+              - column: { name: country_name, value: "Германия" }
+              - column: { name: region_name, value: "Мозель" }
+              - column: { name: grape_varieties, value: "Рислинг" }
+              - column: { name: wine_color, value: "white" }
+              - column: { name: vintage_year, valueNumeric: 2021 }
+              - column: { name: alcohol_by_volume, valueNumeric: 11.0 }
+              - column: { name: description_notes, value: "Лёгкое и свежее вино с яблочными и цитрусовыми нотами" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - column: { name: id, valueNumeric: 3 }
+              - column: { name: wine_name, value: "Кот-дю-Рон" }
+              - column: { name: producer_name, value: "Э. Гигаль" }
+              - column: { name: country_name, value: "Франция" }
+              - column: { name: region_name, value: "Долина Роны" }
+              - column: { name: grape_varieties, value: "Гренаш, Сира, Мурведр" }
+              - column: { name: wine_color, value: "red" }
+              - column: { name: vintage_year, valueNumeric: 2019 }
+              - column: { name: alcohol_by_volume, valueNumeric: 14.0 }
+              - column: { name: description_notes, value: "Плотное вино с ароматом чёрных ягод и специй" }
+
+        - insert:
+            tableName: wine_item
+            columns:
+              - column: { name: id, valueNumeric: 4 }
+              - column: { name: wine_name, value: "Совиньон Блан" }
+              - column: { name: producer_name, value: "Клауди Бэй" }
+              - column: { name: country_name, value: "Новая Зеландия" }
+              - column: { name: region_name, value: "Марлборо" }
+              - column: { name: grape_varieties, value: "Совиньон Блан" }
+              - column: { name: wine_color, value: "white" }
+              - column: { name: vintage_year, valueNumeric: 2022 }
+              - column: { name: alcohol_by_volume, valueNumeric: 12.5 }
+              - column: { name: description_notes, value: "Яркое и ароматное вино с оттенками маракуйи и крыжовника" }
+
+        # --- Остатки на складе ---
+        - insert:
+            tableName: wine_stock
+            columns:
+              - column: { name: wine_id, valueNumeric: 1 }
+              - column: { name: location_name, value: "Ресторан" }
+              - column: { name: quantity_bottles, valueNumeric: 8 }
+              - column: { name: price_rub, valueNumeric: 1900.00 }
+
+        - insert:
+            tableName: wine_stock
+            columns:
+              - column: { name: wine_id, valueNumeric: 2 }
+              - column: { name: location_name, value: "Ресторан" }
+              - column: { name: quantity_bottles, valueNumeric: 5 }
+              - column: { name: price_rub, valueNumeric: 1700.00 }
+
+        - insert:
+            tableName: wine_stock
+            columns:
+              - column: { name: wine_id, valueNumeric: 3 }
+              - column: { name: location_name, value: "Ресторан" }
+              - column: { name: quantity_bottles, valueNumeric: 0 }
+              - column: { name: price_rub, valueNumeric: 2100.00 }
+
+        - insert:
+            tableName: wine_stock
+            columns:
+              - column: { name: wine_id, valueNumeric: 4 }
+              - column: { name: location_name, value: "Ресторан" }
+              - column: { name: quantity_bottles, valueNumeric: 12 }
+              - column: { name: price_rub, valueNumeric: 2300.00 }

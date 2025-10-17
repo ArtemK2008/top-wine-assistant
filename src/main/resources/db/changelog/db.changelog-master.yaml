@@ -8,3 +8,9 @@ databaseChangeLog:
 
   - include:
       file: db/changelog/v001_create_wine_item.yaml
+  - include:
+      file: db/changelog/v002_create_wine_stock.yaml
+  - include:
+      file: db/changelog/v003_insert_demo_wines.yaml
+  - include:
+      file: db/changelog/v004_create_view_available_wines.yaml

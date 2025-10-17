@@ -4,6 +4,8 @@ spring:
   profiles:
     default:
       dev
+  jooq:
+    sql-dialect: postgres
 ai:
   provider: ollama
   base-url: http://localhost:11434/v1
