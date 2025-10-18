@@ -13,7 +13,7 @@ public record AvailableWine(
         String grapeVarieties,
         String wineColor,
         Integer vintageYear,
-        int bottleSizeMl,
+        Integer bottleSizeMl,
         BigDecimal alcoholByVolume,
         int quantityBottles,
         BigDecimal priceRub,

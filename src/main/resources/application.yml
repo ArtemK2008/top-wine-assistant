@@ -12,8 +12,8 @@ ai:
   model: qwen3:8b
   api-key: ""
   timeout-seconds: 20
-  max-tokens: 512
-  temperature: 0.4
+  max-tokens: 768
+  temperature: 0.6
 
 logging:
   level:
