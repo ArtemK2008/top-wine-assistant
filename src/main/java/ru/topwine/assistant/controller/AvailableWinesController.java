@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.topwine.assistant.model.AvailableWine;
-import ru.topwine.assistant.model.AvailableWineFilter;
+import ru.topwine.assistant.model.wine.AvailableWine;
+import ru.topwine.assistant.model.wine.AvailableWineFilter;
 import ru.topwine.assistant.service.AvailableWinesService;
 
 import java.util.List;

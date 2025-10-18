@@ -1,4 +1,4 @@
-package ru.topwine.assistant.model;
+package ru.topwine.assistant.model.wine;
 
 public record AvailableWineFilter(
         String freeQuery,
