@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: v006-create-menu-section
+      author: you
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - not: { tableExists: { tableName: menu_section } }
+
+      changes:
+        - createTable:
+            tableName: menu_section
+            remarks: "Menu sections like Starters, Soups, Mains, Desserts"
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints: { primaryKey: true, primaryKeyName: pk_menu_section, nullable: false }
+              - column: { name: name,       type: TEXT, constraints: { nullable: false } }
+              - column: { name: sort_order, type: INT,  defaultValueNumeric: 0, constraints: { nullable: false } }
+              - column: { name: is_active,  type: BOOLEAN, defaultValueBoolean: true, constraints: { nullable: false } }
+              - column: { name: created_at, type: TIMESTAMPTZ, defaultValueComputed: now(), constraints: { nullable: false } }
+              - column: { name: updated_at, type: TIMESTAMPTZ, defaultValueComputed: now(), constraints: { nullable: false } }
+
+      rollback:
+        - dropTable:
+            tableName: menu_section
+            cascadeConstraints: true

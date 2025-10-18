@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: v010-create-dish-tag
+      author: you
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: menu_dish }
+          - tableExists: { tableName: tag }
+          - not: { tableExists: { tableName: dish_tag } }
+
+      changes:
+        - createTable:
+            tableName: dish_tag
+            remarks: "Dish to tag link"
+            columns:
+              - column:
+                  name: dish_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_dish_tag_dish
+                    references: menu_dish(id)
+                    deleteCascade: true
+              - column:
+                  name: tag_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_dish_tag_tag
+                    references: tag(id)
+                    deleteCascade: true
+
+        - addPrimaryKey:
+            tableName: dish_tag
+            columnNames: dish_id, tag_id
+            constraintName: pk_dish_tag
+
+      rollback:
+        - dropTable:
+            tableName: dish_tag
+            cascadeConstraints: true

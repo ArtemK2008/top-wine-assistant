@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: v008-create-dish-profile
+      author: you
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: menu_dish }
+          - not: { tableExists: { tableName: dish_profile } }
+
+      changes:
+        - createTable:
+            tableName: dish_profile
+            remarks: "Simple taste profile per dish for wine pairing"
+            columns:
+              - column:
+                  name: dish_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_dish_profile
+                    foreignKeyName: fk_profile_dish
+                    references: menu_dish(id)
+                    deleteCascade: true
+
+              - column: { name: heavy_level, type: SMALLINT }   # how heavy/rich the dish feels
+              - column: { name: fat_level,   type: SMALLINT }   # fat/creamy/umami feel
+              - column: { name: spice_level, type: SMALLINT }
+              - column: { name: sweet_level, type: SMALLINT }
+              - column: { name: acid_level,  type: SMALLINT }
+
+              - column:
+                  name: protein_type
+                  type: TEXT
+                  remarks: "beef|pork|lamb|duck|chicken|fish_white|fish_fatty|seafood|veg|cheese|dessert|other"
+
+              - column:
+                  name: cook_way
+                  type: TEXT
+                  remarks: "raw|cured|fried|grilled|roasted|stewed|boiled|baked|sauteed|other"
+
+              - column: { name: sauce_note, type: TEXT }
+
+        - sql:
+            sql: >
+              ALTER TABLE dish_profile
+              ADD CONSTRAINT chk_profile_levels
+              CHECK (
+                (heavy_level BETWEEN 0 AND 5 OR heavy_level IS NULL)
+                AND (fat_level BETWEEN 0 AND 5 OR fat_level IS NULL)
+                AND (spice_level BETWEEN 0 AND 5 OR spice_level IS NULL)
+                AND (sweet_level BETWEEN 0 AND 5 OR sweet_level IS NULL)
+                AND (acid_level BETWEEN 0 AND 5 OR acid_level IS NULL)
+              );
+
+        - sql:
+            sql: >
+              ALTER TABLE dish_profile
+              ADD CONSTRAINT chk_profile_enums
+              CHECK (
+                (protein_type IS NULL OR protein_type IN ('beef','pork','lamb','duck','chicken','fish_white','fish_fatty','seafood','veg','cheese','dessert','other'))
+                AND
+                (cook_way IS NULL OR cook_way IN ('raw','cured','fried','grilled','roasted','stewed','boiled','baked','sauteed','other'))
+              );
+
+      rollback:
+        - sql:
+            sql: |
+              ALTER TABLE IF EXISTS dish_profile DROP CONSTRAINT IF EXISTS chk_profile_enums;
+              ALTER TABLE IF EXISTS dish_profile DROP CONSTRAINT IF EXISTS chk_profile_levels;
+        - dropTable:
+            tableName: dish_profile
+            cascadeConstraints: true

@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: v018-insert-missing-dish-wine-filters
+      author: you
+      preConditions:
+        onFail: HALT
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: dish_wine_filter }
+          - tableExists: { tableName: menu_dish }
+
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: true
+            sql: |-
+              -- ВЯЛЕНОЕ МЯСО — cured meats like coppa/salami: light-to-medium reds & some rosé
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES (
+                (SELECT id FROM menu_dish WHERE name='Вяленое мясо' LIMIT 1),
+                '{"color":["red","rose"],"grape":["sangiovese","barbera","grenache","tempranillo"],"maxPriceRub":4000}'
+              );
+
+              -- ДОМАШНИЙ ХЛЕБ С ВЗБИТОМ МАСЛОМ — neutral; friendly with fresh whites & sparkling
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES (
+                (SELECT id FROM menu_dish WHERE name='Домашний хлеб' LIMIT 1),
+                '{"color":["white","sparkling"],"grape":["chardonnay","chenin blanc","glera","airen"],"maxPriceRub":3000}'
+              );
+
+      rollback:
+        - sql:
+            sql: |-
+              DELETE FROM dish_wine_filter
+              WHERE dish_id IN (
+                SELECT id FROM menu_dish WHERE name IN ('Вяленое мясо','Домашний хлеб')
+              );

@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: v013-insert-menu-sections
+      author: you
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: menu_section }
+      changes:
+        - insert:
+            tableName: menu_section
+            columns:
+              - column: { name: name, value: "Старты" }
+              - column: { name: sort_order, valueNumeric: 10 }
+              - column: { name: is_active, valueBoolean: true }
+        - insert:
+            tableName: menu_section
+            columns:
+              - column: { name: name, value: "Брускетты на домашнем хлебе" }
+              - column: { name: sort_order, valueNumeric: 20 }
+              - column: { name: is_active, valueBoolean: true }
+        - insert:
+            tableName: menu_section
+            columns:
+              - column: { name: name, value: "Закуски" }
+              - column: { name: sort_order, valueNumeric: 30 }
+              - column: { name: is_active, valueBoolean: true }
+        - insert:
+            tableName: menu_section
+            columns:
+              - column: { name: name, value: "Салаты" }
+              - column: { name: sort_order, valueNumeric: 40 }
+              - column: { name: is_active, valueBoolean: true }
+        - insert:
+            tableName: menu_section
+            columns:
+              - column: { name: name, value: "Овощи" }
+              - column: { name: sort_order, valueNumeric: 50 }
+              - column: { name: is_active, valueBoolean: true }
+        - insert:
+            tableName: menu_section
+            columns:
+              - column: { name: name, value: "Супы" }
+              - column: { name: sort_order, valueNumeric: 60 }
+              - column: { name: is_active, valueBoolean: true }
+        - insert:
+            tableName: menu_section
+            columns:
+              - column: { name: name, value: "Горячее" }
+              - column: { name: sort_order, valueNumeric: 70 }
+              - column: { name: is_active, valueBoolean: true }
+        - insert:
+            tableName: menu_section
+            columns:
+              - column: { name: name, value: "Сладкое" }
+              - column: { name: sort_order, valueNumeric: 80 }
+              - column: { name: is_active, valueBoolean: true }
+
+      rollback:
+        - delete:
+            tableName: menu_section
+            where: "name in ('Старты','Брускетты на домашнем хлебе','Закуски','Салаты','Овощи','Супы','Горячее','Сладкое')"

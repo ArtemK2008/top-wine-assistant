@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: v009-create-tag
+      author: you
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - not: { tableExists: { tableName: tag } }
+
+      changes:
+        - createTable:
+            tableName: tag
+            remarks: "Simple tags like 'anchovy', 'truffle', 'vegetarian', 'no_gluten'"
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints: { primaryKey: true, primaryKeyName: pk_tag, nullable: false }
+              - column:
+                  name: name
+                  type: TEXT
+                  constraints: { nullable: false, unique: true, uniqueConstraintName: uq_tag_name }
+
+      rollback:
+        - dropTable:
+            tableName: tag
+            cascadeConstraints: true

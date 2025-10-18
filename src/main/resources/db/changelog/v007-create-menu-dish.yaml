@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: v007-create-menu-dish
+      author: you
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: menu_section }
+          - not: { tableExists: { tableName: menu_dish } }
+
+      changes:
+        - createTable:
+            tableName: menu_dish
+            remarks: "Menu items (dishes) with price and basic fields"
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints: { primaryKey: true, primaryKeyName: pk_menu_dish, nullable: false }
+              - column:
+                  name: section_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_dish_section
+                    references: menu_section(id)
+                    deleteCascade: true
+              - column: { name: name,        type: TEXT, constraints: { nullable: false } }
+              - column: { name: description, type: TEXT }
+              - column: { name: price_rub,   type: "NUMERIC(10,2)", constraints: { nullable: false } }
+              - column: { name: is_active,   type: BOOLEAN, defaultValueBoolean: true, constraints: { nullable: false } }
+              - column: { name: tags_json,   type: jsonb }
+              - column: { name: created_at,  type: TIMESTAMPTZ, defaultValueComputed: now(), constraints: { nullable: false } }
+              - column: { name: updated_at,  type: TIMESTAMPTZ, defaultValueComputed: now(), constraints: { nullable: false } }
+
+        - createIndex:
+            tableName: menu_dish
+            indexName: idx_menu_dish_section
+            columns:
+              - column: { name: section_id }
+
+      rollback:
+        - dropTable:
+            tableName: menu_dish
+            cascadeConstraints: true

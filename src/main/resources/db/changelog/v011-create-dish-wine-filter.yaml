@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: v011-create-dish-wine-filter
+      author: you
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: menu_dish }
+          - not: { tableExists: { tableName: dish_wine_filter } }
+
+      changes:
+        - createTable:
+            tableName: dish_wine_filter
+            remarks: "Optional JSON filter to narrow wine search for a dish"
+            columns:
+              - column:
+                  name: dish_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_dish_wine_filter
+                    foreignKeyName: fk_wine_filter_dish
+                    references: menu_dish(id)
+                    deleteCascade: true
+              - column:
+                  name: filter_json
+                  type: jsonb
+                  constraints: { nullable: false }
+
+      rollback:
+        - dropTable:
+            tableName: dish_wine_filter
+            cascadeConstraints: true
