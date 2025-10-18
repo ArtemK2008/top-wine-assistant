@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: v012-create-view-available-dishes
+      author: you
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+
+      changes:
+        - createView:
+            viewName: v_available_dishes
+            replaceIfExists: true
+            remarks: "Only dishes visible on the current menu"
+            selectQuery: |
+              SELECT
+                d.id         AS dish_id,
+                s.id         AS section_id,
+                s.name       AS section_name,
+                d.name       AS dish_name,
+                d.description,
+                d.price_rub,
+                d.tags_json,
+                d.created_at AS dish_created_at,
+                d.updated_at AS dish_updated_at
+              FROM menu_dish d
+              JOIN menu_section s ON s.id = d.section_id
+              WHERE d.is_active = TRUE AND s.is_active = TRUE
+
+      rollback:
+        - dropView:
+            viewName: v_available_dishes

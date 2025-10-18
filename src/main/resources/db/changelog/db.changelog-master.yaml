@@ -18,3 +18,31 @@ databaseChangeLog:
       file: db/changelog/v004a_extend_wine_color.yaml
   - include:
       file: db/changelog/v005_insert_more_demo_wines.yaml
+  - include:
+      file: db/changelog/v006-create-menu-section.yaml
+  - include:
+      file: db/changelog/v007-create-menu-dish.yaml
+  - include:
+      file: db/changelog/v008-create-dish-profile.yaml
+  - include:
+      file: db/changelog/v009-create-tag.yaml
+  - include:
+      file: db/changelog/v010-create-dish-tag.yaml
+  - include:
+      file: db/changelog/v011-create-dish-wine-filter.yaml
+  - include:
+      file: db/changelog/v012-create-view-available-dishes.yaml
+  - include:
+      file: db/changelog/v013-insert-menu-sections.yaml
+  - include:
+      file: db/changelog/v014-insert-menu-dishes.yaml
+  - include:
+      file: db/changelog/v015-insert-dish-profiles.yaml
+  - include:
+      file: db/changelog/v016-insert-tags.yaml
+  - include:
+      file: db/changelog/v017-insert-dish-wine-filters.yaml
+  - include:
+      file: db/changelog/v018-insert-missing-dish-wine-filters.yaml
+  - include:
+      file: db/changelog/v019-insert-dish-tags.yaml

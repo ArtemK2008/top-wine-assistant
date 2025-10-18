@@ -1,0 +1,140 @@
+databaseChangeLog:
+  - changeSet:
+      id: v014-insert-menu-dishes
+      author: you
+      preConditions:
+        onFail: HALT
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: menu_section }
+          - tableExists: { tableName: menu_dish }
+
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: true
+            sql: |-
+
+              -- === СТАРТЫ ===
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Старты' LIMIT 1),'Маринованные оливки',NULL,550.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Старты' LIMIT 1),'Вяленые томаты',NULL,300.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Старты' LIMIT 1),'Сыры','грюер / золото Швейцарии / камамбер / мёд / ягоды',1450.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Старты' LIMIT 1),'Вяленое мясо','коппа / билтонг / салями / груша',1330.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Старты' LIMIT 1),'Домашний хлеб','взбитое масло',200.00,TRUE);
+
+              -- === БРУСКЕТТЫ НА ДОМАШНЕМ ХЛЕБЕ ===
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Брускетты на домашнем хлебе' LIMIT 1),'Брускетта с томатами','моцарелла / печёный перец / песто',750.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Брускетты на домашнем хлебе' LIMIT 1),'Брускетта с утиной грудкой','груша / руккола',800.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Брускетты на домашнем хлебе' LIMIT 1),'Брускетта с баклажаном','буррата / тахини',800.00,TRUE);
+
+              -- === ЗАКУСКИ ===
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Тартар из говяжьей вырезки','каперсы / перепелиное яйцо / хлеб',1000.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Тартар из тунца','авокадо / апельсин / фенхель',1000.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Тартар из лосося','авокадо / апельсин / фенхель',1000.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Карпаччо из говядины','томаты / базилик',1000.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Татаки из тунца','авокадо / соус понзу с соком юдзу / творожный сыр',1250.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Татаки из лосося','авокадо / соус понзу с соком юдзу / творожный сыр',1250.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Паштет из куриной печени','луковый джем / ягодный джем / хлеб',800.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Утиная грудка','ягоды / соус из красного вина',1250.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Ростбиф','соус из копченой кукурузы / вяленые томаты',1380.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Запеченные улитки в грибном соусе','хлеб',1200.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Запеченные улитки по-бургундски','хлеб',1200.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Закуски' LIMIT 1),'Запеченный камамбер','ягодный джем / хлеб',1100.00,TRUE);
+
+              -- === САЛАТЫ ===
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Салаты' LIMIT 1),'Салат с нектарином','базилик / томаты / моцарелла / наршараб',600.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Салаты' LIMIT 1),'Табуле с киноа','маринованный перец / буррата',600.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Салаты' LIMIT 1),'Салат с тунцом','картофель / спаржа / перепелиные яйца',800.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Салаты' LIMIT 1),'Салат с утиной грудкой','зеленый горох / руккола / груша',750.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Салаты' LIMIT 1),'Салат с креветкой','брокколи / авокадо / томаты / творожный сыр',1000.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Салаты' LIMIT 1),'Салат с осьминогом','брокколи / авокадо / томаты / творожный сыр',1000.00,TRUE);
+
+              -- === ОВОЩИ ===
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Овощи' LIMIT 1),'Жареный баклажан','моцарелла / тахини',700.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Овощи' LIMIT 1),'Запеченная молодая капуста','соус из кукурузы / пармезан / вяленые томаты',550.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Овощи' LIMIT 1),'Маринованные перцы','творожный сыр / анчоусы / салат',750.00,TRUE);
+
+              -- === СУПЫ ===
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Супы' LIMIT 1),'Зеленая окрошка','ростбиф / огурцы / сельдерей / молодой картофель',800.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Супы' LIMIT 1),'Сливочный рыбный суп','дорадо / лосось / брокколи / киноа',800.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Супы' LIMIT 1),'Куриная лапша','разные грибы / перепелиное яйцо / шпинат',800.00,TRUE);
+
+              -- === ГОРЯЧЕЕ ===
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Горячее' LIMIT 1),'Дорадо','киноа с пармезаном / брокколи',1500.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Горячее' LIMIT 1),'Ризотто с тыквенным кремом','креветки / кальмар / фета',1400.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Горячее' LIMIT 1),'Лосось','запеченная молодая капуста / голландский соус / соус из кукурузы',1500.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Горячее' LIMIT 1),'Лагман с томлёными говяжьими щеками','разные грибы / зелёный горох',1350.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Горячее' LIMIT 1),'Лингвини болоньезе','томаты / базилик / моцарелла',1000.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Горячее' LIMIT 1),'Утиная грудка (горячее)','соус из красного вина / штрудель с капустой',1350.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Горячее' LIMIT 1),'Жареная говяжья вырезка','булгур с соусом блю чиз / бекон',2000.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Горячее' LIMIT 1),'Осьминог','рагу из овощей / картофель / брокколи / томаты / оливки',2000.00,TRUE);
+
+              -- === СЛАДКОЕ ===
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Сладкое' LIMIT 1),'Лимонный баскский чизкейк',NULL,400.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Сладкое' LIMIT 1),'Пирог с нектарином','мороженое из сыра дор блю',400.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Сладкое' LIMIT 1),'Брауни из темного шоколада','сливочное мороженое / кедровый орех',650.00,TRUE);
+              INSERT INTO menu_dish(section_id,name,description,price_rub,is_active)
+              VALUES ((SELECT id FROM menu_section WHERE name='Сладкое' LIMIT 1),'Мороженое','сливочное / клубничное / с грецким орехом / ягоды',450.00,TRUE);
+
+      rollback:
+        - sql:
+            sql: |-
+              DELETE FROM menu_dish
+              WHERE name IN (
+                'Маринованные оливки','Вяленые томаты','Сыры','Вяленое мясо','Домашний хлеб',
+                'Брускетта с томатами','Брускетта с утиной грудкой','Брускетта с баклажаном',
+                'Тартар из говяжьей вырезки','Тартар из тунца','Тартар из лосося','Карпаччо из говядины',
+                'Татаки из тунца','Татаки из лосося','Паштет из куриной печени','Утиная грудка',
+                'Ростбиф','Запеченные улитки в грибном соусе','Запеченные улитки по-бургундски',
+                'Запеченный камамбер','Салат с нектарином','Табуле с киноа','Салат с тунцом',
+                'Салат с утиной грудкой','Салат с креветкой','Салат с осьминогом',
+                'Жареный баклажан','Запеченная молодая капуста','Маринованные перцы',
+                'Зеленая окрошка','Сливочный рыбный суп','Куриная лапша',
+                'Дорадо','Ризотто с тыквенным кремом','Лосось','Лагман с томлёными говяжьими щеками',
+                'Лингвини болоньезе','Утиная грудка (горячее)','Жареная говяжья вырезка','Осьминог',
+                'Лимонный баскский чизкейк','Пирог с нектарином','Брауни из темного шоколада','Мороженое'
+              );

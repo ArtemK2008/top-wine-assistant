@@ -1,0 +1,351 @@
+databaseChangeLog:
+  - changeSet:
+      id: v019-insert-dish-tags
+      author: you
+      preConditions:
+        onFail: HALT
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: dish_tag }
+          - tableExists: { tableName: tag }
+          - tableExists: { tableName: menu_dish }
+
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: true
+            sql: |-
+              -- === СТАРТЫ ===
+              -- Маринованные оливки
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d JOIN tag t ON t.name='оливки'
+              WHERE d.name='Маринованные оливки'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Вяленые томаты
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d JOIN tag t ON t.name='вяленые томаты'
+              WHERE d.name='Вяленые томаты'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Сыры
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d JOIN tag t ON t.name IN ('сыры','грюер','камамбер','мёд','ягоды')
+              WHERE d.name='Сыры'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Вяленое мясо
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('вяленое мясо','коппа','билтонг','салями','груша')
+              WHERE d.name='Вяленое мясо'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Домашний хлеб
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('домашний хлеб','взбитое масло')
+              WHERE d.name='Домашний хлеб'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- === БРУСКЕТТЫ НА ДОМАШНЕМ ХЛЕБЕ ===
+              -- Брускетта с томатами
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('брускетта','моцарелла','печёный перец','песто')
+              WHERE d.name='Брускетта с томатами'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Брускетта с утиной грудкой
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('брускетта','утиная грудка','груша','руккола')
+              WHERE d.name='Брускетта с утиной грудкой'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Брускетта с баклажаном
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('брускетта','баклажан','буррата','тахини')
+              WHERE d.name='Брускетта с баклажаном'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- === ЗАКУСКИ ===
+              -- Тартар из говяжьей вырезки
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('тартар','говядина','перепелиные яйца')
+              WHERE d.name='Тартар из говяжьей вырезки'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Тартар из тунца
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('тартар','тунец','авокадо','фенхель')
+              WHERE d.name='Тартар из тунца'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Тартар из лосося
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('тартар','лосось','авокадо','фенхель')
+              WHERE d.name='Тартар из лосося'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Карпаччо из говядины
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('карпаччо','говядина','базилик')
+              WHERE d.name='Карпаччо из говядины'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Татаки из тунца
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('тунец','авокадо','понзу','юдзу','творожный сыр')
+              WHERE d.name='Татаки из тунца'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Татаки из лосося
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('лосось','авокадо','понзу','юдзу','творожный сыр')
+              WHERE d.name='Татаки из лосося'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Паштет из куриной печени
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('паштет','куриная печень','луковый джем','ягодный джем')
+              WHERE d.name='Паштет из куриной печени'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Утиная грудка (холодная)
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d JOIN tag t ON t.name IN ('утиная грудка','ягоды','соус из красного вина')
+              WHERE d.name='Утиная грудка'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Ростбиф
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d JOIN tag t ON t.name IN ('ростбиф','копчёная кукуруза','вяленые томаты')
+              WHERE d.name='Ростбиф'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Улитки
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d JOIN tag t ON t.name IN ('улитки','грибной соус')
+              WHERE d.name='Запеченные улитки в грибном соусе'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d JOIN tag t ON t.name IN ('улитки','по-бургундски')
+              WHERE d.name='Запеченные улитки по-бургундски'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Запеченный камамбер
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d JOIN tag t ON t.name IN ('камамбер запечённый','ягодный джем')
+              WHERE d.name='Запеченный камамбер'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- === САЛАТЫ ===
+              -- Салат с нектарином
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('салат','нектарин','базилик','моцарелла','наршараб')
+              WHERE d.name='Салат с нектарином'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Табуле с киноа
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('табуле','киноа','маринованный перец','буррата')
+              WHERE d.name='Табуле с киноа'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Салат с тунцом
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('салат','тунец','картофель','спаржа','перепелиные яйца')
+              WHERE d.name='Салат с тунцом'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Салат с утиной грудкой
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('салат','утиная грудка','зелёный горох','руккола','груша')
+              WHERE d.name='Салат с утиной грудкой'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Салат с креветкой
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('салат','креветка','брокколи','авокадо','творожный сыр')
+              WHERE d.name='Салат с креветкой'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Салат с осьминогом
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('салат','осьминог','брокколи','авокадо','творожный сыр')
+              WHERE d.name='Салат с осьминогом'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- === ОВОЩИ ===
+              -- Жареный баклажан
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('жареный баклажан','баклажан','моцарелла','тахини')
+              WHERE d.name='Жареный баклажан'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Запеченная молодая капуста
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('молодая капуста','соус из кукурузы','пармезан','вяленые томаты')
+              WHERE d.name='Запеченная молодая капуста'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Маринованные перцы
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id
+              FROM menu_dish d JOIN tag t ON t.name IN ('маринованный перец','творожный сыр','анчоусы','салат')
+              WHERE d.name='Маринованные перцы'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- === СУПЫ ===
+              -- Зеленая окрошка
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('окрошка','ростбиф','огурцы','сельдерей','молодой картофель')
+              WHERE d.name='Зеленая окрошка'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Сливочный рыбный суп
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('рыбный суп','дорадо','лосось','брокколи','киноа')
+              WHERE d.name='Сливочный рыбный суп'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Куриная лапша
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('лапша','грибы','перепелиные яйца','шпинат')
+              WHERE d.name='Куриная лапша'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- === ГОРЯЧЕЕ ===
+              -- Дорадо
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('дорадо','киноа','пармезан','брокколи')
+              WHERE d.name='Дорадо'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Ризотто с тыквенным кремом
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('ризотто','тыквенный крем','креветка','кальмар','фета')
+              WHERE d.name='Ризотто с тыквенным кремом'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Лосось
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('лосось','молодая капуста','голландский соус','соус из кукурузы')
+              WHERE d.name='Лосось'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Лагман с томлёными говяжьими щеками
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('говядина','грибы','зелёный горох')
+              WHERE d.name='Лагман с томлёными говяжьими щеками'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Лингвини болоньезе
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('лапша','базилик','моцарелла','говядина')
+              WHERE d.name='Лингвини болоньезе'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Утиная грудка (горячее)
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('утиная грудка','соус из красного вина','штрудель с капустой')
+              WHERE d.name='Утиная грудка (горячее)'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Жареная говяжья вырезка
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('говяжья вырезка','булгур','соус блю чиз','бекон')
+              WHERE d.name='Жареная говяжья вырезка'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Осьминог (горячее)
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('осьминог','рагу из овощей','картофель','брокколи','оливки')
+              WHERE d.name='Осьминог'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- === СЛАДКОЕ ===
+              -- Лимонный баскский чизкейк
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('чизкейк','лимонный')
+              WHERE d.name='Лимонный баскский чизкейк'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Пирог с нектарином
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('пирог','нектарин','дор блю')
+              WHERE d.name='Пирог с нектарином'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Брауни из темного шоколада
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('брауни','тёмный шоколад','сливочное мороженое','кедровый орех')
+              WHERE d.name='Брауни из темного шоколада'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+              -- Мороженое
+              INSERT INTO dish_tag(dish_id, tag_id)
+              SELECT d.id, t.id FROM menu_dish d
+              JOIN tag t ON t.name IN ('сливочное мороженое','клубничное мороженое','грецкий орех','ягоды')
+              WHERE d.name='Мороженое'
+              ON CONFLICT ON CONSTRAINT pk_dish_tag DO NOTHING;
+
+      rollback:
+        - sql:
+            sql: |-
+              DELETE FROM dish_tag
+              WHERE (dish_id, tag_id) IN (
+                SELECT d.id, t.id
+                FROM menu_dish d
+                JOIN tag t ON t.name IN (
+                  'оливки','вяленые томаты','сыры','грюер','камамбер','мёд','ягоды',
+                  'вяленое мясо','коппа','билтонг','салями','груша',
+                  'домашний хлеб','взбитое масло',
+                  'брускетта','моцарелла','печёный перец','песто','утиная грудка','руккола',
+                  'баклажан','буррата','тахини',
+                  'тартар','говядина','тунец','лосось','карпаччо','авокадо','фенхель','понзу','юдзу','творожный сыр',
+                  'луковый джем','ягодный джем','ростбиф','копчёная кукуруза',
+                  'улитки','грибной соус','по-бургундски','камамбер запечённый',
+                  'салат','нектарин','наршараб','табуле','киноа','маринованный перец',
+                  'картофель','спаржа','перепелиные яйца','креветка','брокколи','осьминог','зелёный горох',
+                  'жареный баклажан','молодая капуста','соус из кукурузы','пармезан','анчоусы',
+                  'окрошка','огурцы','сельдерей','молодой картофель','рыбный суп','дорадо','лапша','грибы','шпинат',
+                  'ризотто','тыквенный крем','кальмар','фета','голландский соус','штрудель с капустой',
+                  'говяжья вырезка','булгур','соус блю чиз','бекон','рагу из овощей',
+                  'чизкейк','лимонный','пирог','дор блю','брауни','тёмный шоколад',
+                  'сливочное мороженое','кедровый орех','клубничное мороженое','грецкий орех','оливки'
+                )
+              );

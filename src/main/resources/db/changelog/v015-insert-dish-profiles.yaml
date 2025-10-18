@@ -1,0 +1,142 @@
+databaseChangeLog:
+  - changeSet:
+      id: v015-insert-dish-profiles
+      author: you
+      preConditions:
+        onFail: HALT
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: menu_dish }
+          - tableExists: { tableName: dish_profile }
+
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: true
+            sql: |-
+
+              -- === СТАРТЫ ===
+              INSERT INTO dish_profile(dish_id,heavy_level,fat_level,spice_level,sweet_level,acid_level,protein_type,cook_way,sauce_note)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Маринованные оливки' LIMIT 1),1,2,0,0,1,'veg','cured',NULL);
+              INSERT INTO dish_profile SELECT id,1,1,0,1,3,'veg','cured','вяление'
+              FROM menu_dish WHERE name='Вяленые томаты' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,4,0,2,1,'cheese','other','мёд, ягоды'
+              FROM menu_dish WHERE name='Сыры' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,3,0,1,1,'beef','cured','коппа/билтонг/салями'
+              FROM menu_dish WHERE name='Вяленое мясо' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,1,2,0,0,0,'other','baked','взбитое масло'
+              FROM menu_dish WHERE name='Домашний хлеб' LIMIT 1;
+
+              -- === БРУСКЕТТЫ НА ДОМАШНЕМ ХЛЕБЕ ===
+              INSERT INTO dish_profile SELECT id,2,2,0,0,2,'veg','baked','песто'
+              FROM menu_dish WHERE name='Брускетта с томатами' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,2,0,1,1,'duck','cured',NULL
+              FROM menu_dish WHERE name='Брускетта с утиной грудкой' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,3,0,0,1,'veg','roasted','тахини'
+              FROM menu_dish WHERE name='Брускетта с баклажаном' LIMIT 1;
+
+              -- === ЗАКУСКИ ===
+              INSERT INTO dish_profile SELECT id,2,2,1,0,1,'beef','raw','каперсы'
+              FROM menu_dish WHERE name='Тартар из говяжьей вырезки' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,1,0,0,2,'fish_fatty','raw','цитрус, фенхель'
+              FROM menu_dish WHERE name='Тартар из тунца' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,2,0,0,2,'fish_fatty','raw','цитрус, фенхель'
+              FROM menu_dish WHERE name='Тартар из лосося' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,1,0,0,2,'beef','raw','томаты, базилик'
+              FROM menu_dish WHERE name='Карпаччо из говядины' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,2,0,0,3,'fish_fatty','grilled','понзу, юдзу'
+              FROM menu_dish WHERE name='Татаки из тунца' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,2,0,0,3,'fish_fatty','grilled','понзу, юдзу'
+              FROM menu_dish WHERE name='Татаки из лосося' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,4,0,2,1,'chicken','other','луковый/ягодный джем'
+              FROM menu_dish WHERE name='Паштет из куриной печени' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,3,0,1,1,'duck','roasted','соус из красного вина'
+              FROM menu_dish WHERE name='Утиная грудка' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,2,0,0,1,'beef','roasted','соус из копченой кукурузы'
+              FROM menu_dish WHERE name='Ростбиф' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,3,0,0,1,'seafood','baked','грибной соус'
+              FROM menu_dish WHERE name='Запеченные улитки в грибном соусе' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,4,0,0,1,'seafood','baked','по-бургундски'
+              FROM menu_dish WHERE name='Запеченные улитки по-бургундски' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,4,0,2,1,'cheese','baked','ягодный джем'
+              FROM menu_dish WHERE name='Запеченный камамбер' LIMIT 1;
+
+              -- === САЛАТЫ ===
+              INSERT INTO dish_profile SELECT id,1,2,0,2,2,'veg','raw','наршараб'
+              FROM menu_dish WHERE name='Салат с нектарином' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,1,2,0,1,2,'veg','raw','маринованный перец'
+              FROM menu_dish WHERE name='Табуле с киноа' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,1,0,0,1,'fish_fatty','boiled','картофель, спаржа, яйца'
+              FROM menu_dish WHERE name='Салат с тунцом' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,2,0,1,1,'duck','cured',NULL
+              FROM menu_dish WHERE name='Салат с утиной грудкой' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,2,0,0,1,'seafood','boiled','авокадо, творожный сыр'
+              FROM menu_dish WHERE name='Салат с креветкой' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,2,0,0,1,'seafood','grilled','авокадо, творожный сыр'
+              FROM menu_dish WHERE name='Салат с осьминогом' LIMIT 1;
+
+              -- === ОВОЩИ ===
+              INSERT INTO dish_profile SELECT id,2,3,0,0,1,'veg','fried','тахини'
+              FROM menu_dish WHERE name='Жареный баклажан' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,2,0,0,1,'veg','baked','соус из кукурузы'
+              FROM menu_dish WHERE name='Запеченная молодая капуста' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,2,0,0,2,'veg','cured','анчоусы'
+              FROM menu_dish WHERE name='Маринованные перцы' LIMIT 1;
+
+              -- === СУПЫ ===
+              INSERT INTO dish_profile SELECT id,2,1,0,0,3,'beef','boiled','окрошка'
+              FROM menu_dish WHERE name='Зеленая окрошка' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,3,0,0,1,'fish_white','stewed','сливочный'
+              FROM menu_dish WHERE name='Сливочный рыбный суп' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,1,0,0,1,'chicken','boiled','лапша, грибы'
+              FROM menu_dish WHERE name='Куриная лапша' LIMIT 1;
+
+              -- === ГОРЯЧЕЕ ===
+              INSERT INTO dish_profile SELECT id,3,2,0,0,1,'fish_white','roasted','киноа, брокколи'
+              FROM menu_dish WHERE name='Дорадо' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,3,0,0,1,'seafood','stewed','тыквенный крем'
+              FROM menu_dish WHERE name='Ризотто с тыквенным кремом' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,4,0,0,1,'fish_fatty','roasted','голландский соус'
+              FROM menu_dish WHERE name='Лосось' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,4,3,2,0,1,'beef','stewed','лагман'
+              FROM menu_dish WHERE name='Лагман с томлёными говяжьими щеками' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,2,0,0,1,'beef','stewed','болоньезе'
+              FROM menu_dish WHERE name='Лингвини болоньезе' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,4,3,0,0,1,'duck','roasted','соус из красного вина'
+              FROM menu_dish WHERE name='Утиная грудка (горячее)' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,4,2,0,0,1,'beef','fried','блю чиз'
+              FROM menu_dish WHERE name='Жареная говяжья вырезка' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,2,0,0,1,'seafood','stewed','рагу из овощей'
+              FROM menu_dish WHERE name='Осьминог' LIMIT 1;
+
+              -- === СЛАДКОЕ ===
+              INSERT INTO dish_profile SELECT id,2,3,0,4,2,'dessert','baked','лимонный'
+              FROM menu_dish WHERE name='Лимонный баскский чизкейк' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,2,3,0,4,2,'dessert','baked','нектарин, дор блю'
+              FROM menu_dish WHERE name='Пирог с нектарином' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,3,3,0,4,1,'dessert','baked','шоколад'
+              FROM menu_dish WHERE name='Брауни из темного шоколада' LIMIT 1;
+              INSERT INTO dish_profile SELECT id,1,3,0,3,0,'dessert','other','ассорти мороженого'
+              FROM menu_dish WHERE name='Мороженое' LIMIT 1;
+
+      rollback:
+        - sql:
+            sql: |-
+              DELETE FROM dish_profile
+              WHERE dish_id IN (
+                SELECT id FROM menu_dish WHERE name IN (
+                  'Маринованные оливки','Вяленые томаты','Сыры','Вяленое мясо','Домашний хлеб',
+                  'Брускетта с томатами','Брускетта с утиной грудкой','Брускетта с баклажаном',
+                  'Тартар из говяжьей вырезки','Тартар из тунца','Тартар из лосося','Карпаччо из говядины',
+                  'Татаки из тунца','Татаки из лосося','Паштет из куриной печени','Утиная грудка',
+                  'Ростбиф','Запеченные улитки в грибном соусе','Запеченные улитки по-бургундски',
+                  'Запеченный камамбер','Салат с нектарином','Табуле с киноа','Салат с тунцом',
+                  'Салат с утиной грудкой','Салат с креветкой','Салат с осьминогом',
+                  'Жареный баклажан','Запеченная молодая капуста','Маринованные перцы',
+                  'Зеленая окрошка','Сливочный рыбный суп','Куриная лапша',
+                  'Дорадо','Ризотто с тыквенным кремом','Лосось','Лагман с томлёными говяжьими щеками',
+                  'Лингвини болоньезе','Утиная грудка (горячее)','Жареная говяжья вырезка','Осьминог',
+                  'Лимонный баскский чизкейк','Пирог с нектарином','Брауни из темного шоколада','Мороженое'
+                )
+              );

@@ -1,0 +1,136 @@
+databaseChangeLog:
+  - changeSet:
+      id: v017-insert-dish-wine-filters
+      author: you
+      preConditions:
+        onFail: HALT
+        onError: HALT
+        and:
+          - dbms: { type: postgresql }
+          - tableExists: { tableName: dish_wine_filter }
+          - tableExists: { tableName: menu_dish }
+
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: true
+            sql: |-
+              -- ==== Старты / лёгкие закуски ====
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Маринованные оливки' LIMIT 1), '{"color":["white","rose","sparkling"],"maxPriceRub":3000}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Вяленые томаты' LIMIT 1), '{"color":["white","rose"],"grape":["sangiovese","barbera"],"maxPriceRub":3000}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Сыры' LIMIT 1), '{"color":["white","red"],"grape":["chardonnay","pinot noir"]}');
+
+              -- ==== Брускетты ====
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Брускетта с томатами' LIMIT 1), '{"color":["red","rose"],"grape":["sangiovese","barbera"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Брускетта с утиной грудкой' LIMIT 1), '{"color":["red"],"grape":["pinot noir","merlot"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Брускетта с баклажаном' LIMIT 1), '{"color":["red","white"],"grape":["grenache","viognier"]}');
+
+              -- ==== Закуски ====
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Тартар из говяжьей вырезки' LIMIT 1), '{"color":["red"],"grape":["pinot noir","gamay"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Тартар из тунца' LIMIT 1), '{"color":["white","rose"],"grape":["sauvignon blanc","riesling"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Тартар из лосося' LIMIT 1), '{"color":["white","rose"],"grape":["chardonnay","riesling"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Карпаччо из говядины' LIMIT 1), '{"color":["red"],"grape":["pinot noir","barbera"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Татаки из тунца' LIMIT 1), '{"color":["white","rose"],"grape":["riesling","sauvignon blanc"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Татаки из лосося' LIMIT 1), '{"color":["white","rose"],"grape":["chardonnay","pinot noir"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Паштет из куриной печени' LIMIT 1), '{"color":["white"],"grape":["riesling","chenin blanc"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Утиная грудка' LIMIT 1), '{"color":["red"],"grape":["pinot noir","nebbiolo","merlot"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Ростбиф' LIMIT 1), '{"color":["red"],"grape":["cabernet sauvignon","syrah","merlot"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Запеченные улитки по-бургундски' LIMIT 1), '{"color":["white"],"region":["Burgundy"],"grape":["chardonnay"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Запеченные улитки в грибном соусе' LIMIT 1), '{"color":["white"],"grape":["chardonnay","pinot gris"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Запеченный камамбер' LIMIT 1), '{"color":["white","sparkling"],"grape":["chardonnay"]}');
+
+              -- ==== Салаты ====
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Салат с нектарином' LIMIT 1), '{"color":["white"],"grape":["riesling","gewurztraminer"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Табуле с киноа' LIMIT 1), '{"color":["white"],"grape":["sauvignon blanc","vermentino"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Салат с тунцом' LIMIT 1), '{"color":["rose","white"],"grape":["grenache","sauvignon blanc"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Салат с утиной грудкой' LIMIT 1), '{"color":["red","rose"],"grape":["pinot noir"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Салат с креветкой' LIMIT 1), '{"color":["white"],"grape":["albarino","sauvignon blanc","riesling"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Салат с осьминогом' LIMIT 1), '{"color":["white","rose"],"grape":["albarino","vermentino"]}');
+
+              -- ==== Овощи ====
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Жареный баклажан' LIMIT 1), '{"color":["red"],"grape":["grenache","syrah"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Запеченная молодая капуста' LIMIT 1), '{"color":["white"],"grape":["chardonnay","chenin blanc"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Маринованные перцы' LIMIT 1), '{"color":["white","rose"],"grape":["sauvignon blanc","vermentino"]}');
+
+              -- ==== Супы ====
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Зеленая окрошка' LIMIT 1), '{"color":["white"],"grape":["gruner veltliner","sauvignon blanc"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Сливочный рыбный суп' LIMIT 1), '{"color":["white"],"grape":["chardonnay","viognier"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Куриная лапша' LIMIT 1), '{"color":["white"],"grape":["riesling","pinot grigio"]}');
+
+              -- ==== Горячее ====
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Дорадо' LIMIT 1), '{"color":["white"],"grape":["sauvignon blanc","albarino","vermentino"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Ризотто с тыквенным кремом' LIMIT 1), '{"color":["white"],"grape":["chardonnay","vermentino","garganega"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Лосось' LIMIT 1), '{"color":["white","red"],"grape":["chardonnay","pinot noir"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Лагман с томлёными говяжьими щеками' LIMIT 1), '{"color":["red"],"grape":["syrah","cabernet sauvignon","malbec"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Лингвини болоньезе' LIMIT 1), '{"color":["red"],"grape":["sangiovese","barbera","montepulciano"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Утиная грудка (горячее)' LIMIT 1), '{"color":["red"],"grape":["pinot noir","nebbiolo","merlot"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Жареная говяжья вырезка' LIMIT 1), '{"color":["red"],"grape":["cabernet sauvignon","merlot","syrah"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Осьминог' LIMIT 1), '{"color":["white","rose"],"grape":["albarino","vermentino","sauvignon blanc"]}');
+
+              -- ==== Десерты ====
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Лимонный баскский чизкейк' LIMIT 1), '{"color":["white"],"grape":["riesling","moscato"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Пирог с нектарином' LIMIT 1), '{"color":["white"],"grape":["moscato","riesling"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Брауни из темного шоколада' LIMIT 1), '{"color":["red","white"],"grape":["port","madeira","sherry"]}');
+              INSERT INTO dish_wine_filter(dish_id, filter_json)
+              VALUES ((SELECT id FROM menu_dish WHERE name='Мороженое' LIMIT 1), '{"color":["white"],"grape":["moscato"]}');
+
+      rollback:
+        - sql:
+            sql: |-
+              DELETE FROM dish_wine_filter
+              WHERE dish_id IN (
+                SELECT id FROM menu_dish WHERE name IN (
+                  'Маринованные оливки','Вяленые томаты','Сыры',
+                  'Брускетта с томатами','Брускетта с утиной грудкой','Брускетта с баклажаном',
+                  'Тартар из говяжьей вырезки','Тартар из тунца','Тартар из лосося','Карпаччо из говядины',
+                  'Татаки из тунца','Татаки из лосося','Паштет из куриной печени','Утиная грудка','Ростбиф',
+                  'Запеченные улитки по-бургундски','Запеченные улитки в грибном соусе','Запеченный камамбер',
+                  'Салат с нектарином','Табуле с киноа','Салат с тунцом','Салат с утиной грудкой','Салат с креветкой','Салат с осьминогом',
+                  'Жареный баклажан','Запеченная молодая капуста','Маринованные перцы',
+                  'Зеленая окрошка','Сливочный рыбный суп','Куриная лапша',
+                  'Дорадо','Ризотто с тыквенным кремом','Лосось','Лагман с томлёными говяжьими щеками',
+                  'Лингвини болоньезе','Утиная грудка (горячее)','Жареная говяжья вырезка','Осьминог',
+                  'Лимонный баскский чизкейк','Пирог с нектарином','Брауни из темного шоколада','Мороженое'
+                )
+              );
