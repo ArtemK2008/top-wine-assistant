@@ -27,13 +27,14 @@ class ChatControllerExceptionTest {
 
     @MockitoBean
     private SommelierService sommelierService;
+
     @MockitoBean
     private ConversationStore conversationStore;
 
     @Test
-    @DisplayName("given непредвиденная ошибка when POST /api/chat then 500 и JSON с code=1999")
-    void given_unexpected_error_when_chat_then_500_and_json_body() {
-        Mockito.when(sommelierService.advise(anyString()))
+    @DisplayName("given непредвиденная ошибка when POST /api/chat then 504 и JSON с code=1001")
+    void given_unexpected_error_when_chat_then_504_and_json_body() {
+        Mockito.when(sommelierService.advise(anyString(), anyString()))
                 .thenThrow(new TopWineException(TopWineException.Kind.PROVIDER_TIMEOUT, 30));
 
         ChatRequest request = new ChatRequest("steak");
@@ -41,6 +42,7 @@ class ChatControllerExceptionTest {
         webTestClient.post()
                 .uri("/api/chat")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Client-Id", "test-client")
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isEqualTo(504)
