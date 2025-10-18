@@ -8,9 +8,9 @@ import ru.topwine.assistant.guard.AdviceFilterChain;
 import ru.topwine.assistant.http.client.ChatClient;
 import ru.topwine.assistant.http.request.OpenAiChatCompletionsRequest;
 import ru.topwine.assistant.http.request.OpenAiRequestFactory;
-import ru.topwine.assistant.model.AvailableWine;
-import ru.topwine.assistant.model.AvailableWineFilter;
 import ru.topwine.assistant.model.ChatMessage;
+import ru.topwine.assistant.model.wine.AvailableWine;
+import ru.topwine.assistant.model.wine.AvailableWineFilter;
 import ru.topwine.assistant.service.AvailableWinesService;
 import ru.topwine.assistant.service.SommelierService;
 

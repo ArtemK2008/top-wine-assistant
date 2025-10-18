@@ -1,7 +1,7 @@
 package ru.topwine.assistant.service;
 
-import ru.topwine.assistant.model.AvailableWine;
-import ru.topwine.assistant.model.AvailableWineFilter;
+import ru.topwine.assistant.model.wine.AvailableWine;
+import ru.topwine.assistant.model.wine.AvailableWineFilter;
 
 import java.util.List;
 

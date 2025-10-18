@@ -1,4 +1,4 @@
-package ru.topwine.assistant.model;
+package ru.topwine.assistant.model.wine;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

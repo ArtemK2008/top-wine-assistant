@@ -2,8 +2,8 @@ package ru.topwine.assistant.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.topwine.assistant.model.AvailableWine;
-import ru.topwine.assistant.model.AvailableWineFilter;
+import ru.topwine.assistant.model.wine.AvailableWine;
+import ru.topwine.assistant.model.wine.AvailableWineFilter;
 import ru.topwine.assistant.repository.AvailableWinesRepository;
 import ru.topwine.assistant.service.AvailableWinesService;
 

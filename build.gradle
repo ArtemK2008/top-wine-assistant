@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.6'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'nu.studer.jooq' version '9.0'
 }
 
 group = 'ru.topwine'
@@ -14,17 +15,16 @@ java {
     }
 }
 
+repositories { mavenCentral() }
+
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+    compileOnly { extendsFrom annotationProcessor }
 }
 
-repositories {
-    mavenCentral()
-}
+ext['jooq.version'] = '3.19.26'
 
 dependencies {
+    // --- Spring Boot ---
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -32,15 +32,62 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
     implementation 'org.liquibase:liquibase-core'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
+
     runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    jooqGenerator 'org.postgresql:postgresql:42.7.3'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+// ===== jOOQ CODEGEN (from a running Postgres) =====
+jooq {
+    version = '3.19.26'
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = true
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = "jdbc:postgresql://${System.getenv('DB_HOST') ?: 'localhost'}:${System.getenv('DB_PORT') ?: '5432'}/${System.getenv('DB_NAME') ?: 'topwine'}"
+                    user = System.getenv('DB_USER') ?: 'topwine'
+                    password = System.getenv('DB_PASSWORD') ?: 'topwine'
+                }
+                generator {
+                    name = 'org.jooq.codegen.JavaGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                        excludes = 'databasechangelog|databasechangeloglock'
+                        forcedTypes {
+                            forcedType {
+                                name = 'JSONB'
+                                includeTypes = 'JSONB'
+                            }
+                        }
+                    }
+                    target {
+                        packageName = 'ru.topwine.assistant.jooq'
+                        directory = 'build/generated-src/jooq/main'
+                    }
+                    generate {
+                        javaTimeTypes = true
+                        records = true
+                        daos = false
+                        pojos = false
+                        deprecated = false
+                        fluentSetters = false
+                    }
+                }
+            }
+        }
+    }
 }
+
+tasks.named('test') { useJUnitPlatform() }
