@@ -27,16 +27,35 @@ jobs:
           --health-timeout=3s
           --health-retries=60
 
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping || exit 1"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=60
+
     permissions:
       contents: read
 
     env:
       SPRING_PROFILES_ACTIVE: dev
+
+      # --- DB ---
       DB_HOST: 127.0.0.1
       DB_PORT: 5432
       DB_NAME: topwine
       DB_USER: topwine
       DB_PASSWORD: topwine
+
+      # --- REDIS ---
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+
+      # optional: silence health if desired (maps to management.health.redis.enabled=false)
+      MANAGEMENT_HEALTH_REDIS_ENABLED: false
 
     steps:
       - name: Checkout
