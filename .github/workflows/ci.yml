@@ -18,6 +18,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     services:
       postgres:
         image: postgres:16
@@ -25,10 +26,12 @@ jobs:
           POSTGRES_DB: topwine
           POSTGRES_USER: topwine
           POSTGRES_PASSWORD: topwine
+        # Health check helps, but we still add a small retry around Liquibase below.
         options: >-
           --health-cmd="pg_isready -U topwine -d topwine"
-          --health-interval=5s --health-timeout=3s --health-retries=5
-        # no "ports" needed when using service DNS name
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
 
     permissions:
       contents: read
@@ -52,6 +55,31 @@ jobs:
       - name: Gradle version
         run: ./gradlew --version
 
+      # --- Make sure Liquibase can reach Postgres (retry a few times) ---
+      - name: Apply Liquibase migrations (retry)
+        env:
+          # pass through DB_* env vars to the Gradle process explicitly (optional but clear)
+          DB_HOST: ${{ env.DB_HOST }}
+          DB_PORT: ${{ env.DB_PORT }}
+          DB_NAME: ${{ env.DB_NAME }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
+        shell: bash
+        run: |
+          set -e
+          # Give the service a moment even if health says "healthy"
+          for i in {1..20}; do
+            echo "Liquibase attempt $i..."
+            if ./gradlew --no-daemon liquibaseUpdate; then
+              echo "Liquibase migrations applied."
+              exit 0
+            fi
+            echo "Liquibase not ready yet, sleeping 3s..."
+            sleep 3
+          done
+          echo "Liquibase failed after retries"; exit 1
+
+      # Build will trigger jOOQ codegen as part of compilation (nu.studer hooks)
       - name: Build & test
         run: ./gradlew --no-daemon clean test build
 

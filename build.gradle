@@ -10,15 +10,16 @@ version = '0.0.1-SNAPSHOT'
 description = 'Top Wine Assistant'
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
 }
 
 repositories { mavenCentral() }
 
 configurations {
     compileOnly { extendsFrom annotationProcessor }
+
+    // for CLI-style Liquibase execution in CI
+    liquibaseRuntime
 }
 
 ext['jooq.version'] = '3.19.26'
@@ -42,10 +43,43 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // jOOQ codegen (live DB)
     jooqGenerator 'org.postgresql:postgresql:42.7.3'
+
+    // ---- Liquibase CLI on Gradle side (used only by liquibaseUpdate task) ----
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.23.2'
+    liquibaseRuntime 'org.liquibase.ext:liquibase-postgresql:4.23.2'
+    liquibaseRuntime 'org.postgresql:postgresql:42.7.3'
+    liquibaseRuntime 'info.picocli:picocli:4.7.6' // Liquibase CLI needs this on classpath
 }
 
-// ===== jOOQ CODEGEN (from a running Postgres) =====
+// --- Liquibase update task (runs migrations against the CI Postgres) ---
+tasks.register('liquibaseUpdate', JavaExec) {
+    group = 'liquibase'
+    description = 'Apply Liquibase changelog to the target database'
+    classpath = configurations.liquibaseRuntime
+    mainClass = 'liquibase.integration.commandline.Main'
+
+    // Run from resources root so relative includes resolve
+    workingDir = file('src/main/resources')
+
+    def dbHost = System.getenv('DB_HOST') ?: 'localhost'
+    def dbPort = System.getenv('DB_PORT') ?: '5432'
+    def dbName = System.getenv('DB_NAME') ?: 'topwine'
+    def dbUser = System.getenv('DB_USER') ?: 'topwine'
+    def dbPass = System.getenv('DB_PASSWORD') ?: 'topwine'
+
+    args = [
+            "--url=jdbc:postgresql://${dbHost}:${dbPort}/${dbName}",
+            "--username=${dbUser}",
+            "--password=${dbPass}",
+            // relative to workingDir above:
+            "--changeLogFile=db/changelog/db.changelog-master.yaml",
+            "update"
+    ]
+}
+
+// ===== jOOQ CODEGEN (introspects running Postgres) =====
 jooq {
     version = '3.19.26'
     configurations {
@@ -90,4 +124,8 @@ jooq {
     }
 }
 
+// Ensure schema exists before codegen
+tasks.named('generateJooq').configure { dependsOn(tasks.named('liquibaseUpdate')) }
+
+// Usual tests
 tasks.named('test') { useJUnitPlatform() }
