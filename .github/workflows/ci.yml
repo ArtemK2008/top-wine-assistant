@@ -5,33 +5,39 @@ on:
     branches: [ main, master, develop, 'feature/**' ]
   pull_request:
     branches: [ main, master, develop ]
-  workflow_dispatch: { }
+  workflow_dispatch: {}
 
-env:
-  SPRING_PROFILES_ACTIVE: dev
-  DB_HOST: postgres
-  DB_PORT: 5432
-  DB_NAME: topwine
-  DB_USER: topwine
-  DB_PASSWORD: topwine
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    # Spin up Postgres as a service container
     services:
       postgres:
         image: postgres:16
         env:
           POSTGRES_DB: topwine
-          POSTGRES_USER: topwine
-          POSTGRES_PASSWORD: topwine
+          POSTGRES_USER: ${{ secrets.CI_DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
         options: >-
-          --health-cmd="pg_isready -U topwine -d topwine"
-          --health-interval=5s --health-timeout=3s --health-retries=5
-        # no "ports" needed when using service DNS name
+          --health-cmd="pg_isready -U ${{ secrets.CI_DB_USER }} -d topwine"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
+        ports:
+          - 5432:5432
 
-    permissions:
-      contents: read
+    # These env vars are read by your Spring config and jOOQ codegen
+    env:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: topwine
+      DB_USER: ${{ secrets.CI_DB_USER }}
+      DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
 
     steps:
       - name: Checkout
@@ -44,16 +50,21 @@ jobs:
           java-version: '21'
           cache: gradle
 
-      - name: Normalize gradlew line endings & make executable
+      - name: Normalize gradlew & make executable
         run: |
           sed -i 's/\r$//' gradlew
           chmod +x gradlew
 
-      - name: Gradle version
-        run: ./gradlew --version
+      # (Optional) Extra wait loop; services.healthcheck usually suffices
+      - name: Wait for Postgres (extra safety)
+        run: |
+          for i in {1..30}; do
+            (echo > /dev/tcp/127.0.0.1/5432) >/dev/null 2>&1 && echo "Postgres is up" && break
+            echo "Waiting for Postgres..."; sleep 2
+          done
 
-      - name: Build & test
-        run: ./gradlew --no-daemon clean test build
+      - name: Gradle build (includes jOOQ codegen)
+        run: ./gradlew --no-daemon clean generateJooq test build
 
       - name: Upload test report
         if: always()
