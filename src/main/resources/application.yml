@@ -1,4 +1,9 @@
 spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      connect-timeout: 2s
   application:
     name: Top Wine Assistant
   profiles:

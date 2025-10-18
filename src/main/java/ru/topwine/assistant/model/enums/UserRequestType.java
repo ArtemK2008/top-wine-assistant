@@ -4,5 +4,6 @@ public enum UserRequestType {
     DISH,
     SECTION,
     WINE_NAME,
-    GENERAL
+    GENERAL,
+    PRICE
 }
