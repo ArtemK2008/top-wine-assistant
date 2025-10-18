@@ -13,6 +13,7 @@ import ru.topwine.assistant.exception.GlobalExceptionHandler;
 import ru.topwine.assistant.exception.TopWineException;
 import ru.topwine.assistant.model.ChatRequest;
 import ru.topwine.assistant.service.SommelierService;
+import ru.topwine.assistant.service.session.ConversationStore;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -26,6 +27,8 @@ class ChatControllerExceptionTest {
 
     @MockitoBean
     private SommelierService sommelierService;
+    @MockitoBean
+    private ConversationStore conversationStore;
 
     @Test
     @DisplayName("given непредвиденная ошибка when POST /api/chat then 500 и JSON с code=1999")

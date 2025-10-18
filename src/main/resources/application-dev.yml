@@ -14,6 +14,12 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     default-schema: ${DB_SCHEMA:public}
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2s
+
 management:
   endpoints:
     web:
@@ -22,3 +28,6 @@ management:
   endpoint:
     health:
       show-details: always
+  health:
+    redis:
+      enabled: false

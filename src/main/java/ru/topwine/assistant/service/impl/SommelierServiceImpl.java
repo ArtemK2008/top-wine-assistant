@@ -16,6 +16,7 @@ import ru.topwine.assistant.model.menu.DishProfile;
 import ru.topwine.assistant.model.menu.DishWineFilter;
 import ru.topwine.assistant.model.menu.MenuDish;
 import ru.topwine.assistant.model.menu.MenuSection;
+import ru.topwine.assistant.model.session.ConversationContext;
 import ru.topwine.assistant.model.util.UserRequest;
 import ru.topwine.assistant.model.wine.AvailableWine;
 import ru.topwine.assistant.model.wine.AvailableWineFilter;
@@ -27,6 +28,7 @@ import ru.topwine.assistant.service.MenuDishService;
 import ru.topwine.assistant.service.MenuSectionService;
 import ru.topwine.assistant.service.SommelierService;
 import ru.topwine.assistant.service.TagService;
+import ru.topwine.assistant.service.session.ConversationStore;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -75,13 +77,23 @@ public class SommelierServiceImpl implements SommelierService {
     private final DishProfileService dishProfileService;
     private final TagService tagService;
 
+    private final ConversationStore conversationStore;
+
     @Override
     public String advise(String userMessage) {
+        return advise("default", userMessage);
+    }
+
+    public String advise(String clientId, String userMessage) {
         AdviceContext adviceContext = new AdviceContext(userMessage);
         Optional<String> early = adviceFilterChain.run(adviceContext);
         if (early.isPresent()) return early.get();
 
         UserRequest userRequest = detectUserRequest(userMessage);
+
+        if (userRequest.type() == UserRequestType.PRICE) {
+            return handlePriceFollowUp(clientId);
+        }
 
         AvailableWineFilter userFilter = availableWinesService.deriveFilterFromUserText(userMessage);
         AvailableWineFilter effectiveFilter = userFilter;
@@ -120,7 +132,16 @@ public class SommelierServiceImpl implements SommelierService {
                 : fetchBucketedWithoutBudget(effectiveFilter);
 
         if (groundingWines.isEmpty()) {
-            return buildNoMatchesResponse(effectiveFilter);
+            String reply = buildNoMatchesResponse(effectiveFilter);
+            saveConversationSnapshot(
+                    clientId,
+                    userMessage,
+                    reply,
+                    List.of(),
+                    menuForContext.stream().map(AvailableDish::dishId).toList(),
+                    effectiveFilter
+            );
+            return reply;
         }
 
         StringBuilder systemBlock = new StringBuilder();
@@ -143,7 +164,18 @@ public class SommelierServiceImpl implements SommelierService {
         );
 
         String reply = chatClient.chat(request);
-        return reply == null ? "" : reply;
+        reply = (reply == null) ? "" : reply;
+
+        saveConversationSnapshot(
+                clientId,
+                userMessage,
+                reply,
+                groundingWines.stream().map(AvailableWine::stockId).toList(),
+                menuForContext.stream().map(AvailableDish::dishId).toList(),
+                effectiveFilter
+        );
+
+        return reply;
     }
 
     private UserRequest detectUserRequest(String userMessage) {
@@ -152,6 +184,10 @@ public class SommelierServiceImpl implements SommelierService {
         }
         String text = userMessage.trim();
         String lowered = text.toLowerCase(RU);
+
+        if (lowered.matches(".*\\b(цена|сто(ит|ят)|почем|почём|сколько.*стои(т|тся|тят)|сколько.*они.*стоят)\\b.*")) {
+            return new UserRequest(UserRequestType.PRICE, text);
+        }
 
         if (lowered.contains("закуск") || lowered.contains("стартер")
             || lowered.contains("суп") || lowered.contains("горяч")
@@ -174,6 +210,113 @@ public class SommelierServiceImpl implements SommelierService {
         return lowered.contains("каберне") || lowered.contains("мерло") || lowered.contains("пино")
                || lowered.contains("рислинг") || lowered.contains("шардоне")
                || lowered.contains("красн") || lowered.contains("бел") || lowered.contains("розе") || lowered.contains("игрист");
+    }
+
+    private String handlePriceFollowUp(String clientId) {
+        var stateOpt = conversationStore.get(clientId);
+        if (stateOpt.isEmpty()) {
+            return "Могу подсказать цены, но не вижу последней рекомендации. Назовите, пожалуйста, конкретное вино или блюдо.";
+        }
+        var state = stateOpt.get();
+        var lastText = (state.recentAssistantReplies().isEmpty() ? null
+                : state.recentAssistantReplies().getLast());
+        if (lastText == null || lastText.isBlank()) {
+            return "Пока не вижу последней рекомендации. Скажите название вина или блюда — подскажу цену.";
+        }
+
+        List<AvailableDish> candidateDishes = state.lastShownDishIds().isEmpty()
+                ? List.of()
+                : availableDishesService.all().stream()
+                .filter(d -> state.lastShownDishIds().contains(d.dishId()))
+                .toList();
+
+        List<AvailableWine> candidateWines;
+        if (state.lastShownWineStockIds().isEmpty()) {
+            candidateWines = List.of();
+        } else {
+            var overfetch = availableWinesService.search(AvailableWineFilter.empty(), 500);
+            candidateWines = overfetch.stream()
+                    .filter(w -> state.lastShownWineStockIds().contains(w.stockId()))
+                    .toList();
+        }
+
+        MentionedItems mentions = extractMentions(lastText, candidateWines, candidateDishes);
+        if (mentions.wines().isEmpty() && mentions.dishes().isEmpty()) {
+            return "Не нашёл упоминаний из последней рекомендации. Назовите конкретное вино или блюдо — скажу цену.";
+        }
+
+        StringBuilder out = new StringBuilder();
+        int i = 1;
+        for (AvailableWine w : mentions.wines()) {
+            out.append(i++).append(") ").append(buildLabel(w)).append(" — ").append(formatPrice(w.priceRub())).append('\n');
+        }
+        for (AvailableDish d : mentions.dishes()) {
+            out.append(i++).append(") ").append(d.dishName()).append(" — ").append(formatPrice(d.priceRub())).append('\n');
+        }
+        return out.toString().trim();
+    }
+
+    private record MentionedItems(List<AvailableWine> wines, List<AvailableDish> dishes) {
+    }
+
+    private MentionedItems extractMentions(String assistantText,
+                                           List<AvailableWine> candidateWines,
+                                           List<AvailableDish> candidateDishes) {
+        String text = assistantText.toLowerCase(RU);
+
+        var matchedWines = candidateWines.stream()
+                .filter(w -> {
+                    String full = buildLabel(w).toLowerCase(RU);
+                    if (!full.isBlank() && text.contains(full)) return true;
+                    String wineName = w.wineName() == null ? "" : w.wineName().toLowerCase(RU);
+                    if (!wineName.isBlank() && text.contains(wineName)) return true;
+                    String producer = w.producerName() == null ? "" : w.producerName().toLowerCase(RU);
+                    return !producer.isBlank() && text.contains(producer);
+                })
+                .toList();
+
+        List<AvailableDish> matchedDishes = candidateDishes.stream()
+                .filter(d -> {
+                    String name = d.dishName() == null ? "" : d.dishName().toLowerCase(RU);
+                    return !name.isBlank() && text.contains(name);
+                })
+                .toList();
+
+        return new MentionedItems(matchedWines, matchedDishes);
+    }
+
+    private void saveConversationSnapshot(
+            String clientId,
+            String userMsg,
+            String assistantReply,
+            List<Long> wineStockIds,
+            List<Long> dishIds,
+            AvailableWineFilter lastFilter
+    ) {
+        ConversationContext prev = conversationStore.get(clientId).orElseGet(ru.topwine.assistant.model.session.ConversationContext::empty);
+
+        List<String> newUser = appendCap(prev.recentUserMessages(), userMsg, 10);
+        List<String> newAssistant = appendCap(prev.recentAssistantReplies(), assistantReply, 10);
+
+        ConversationContext ctx = new ru.topwine.assistant.model.session.ConversationContext(
+                newUser,
+                newAssistant,
+                wineStockIds == null ? List.of() : wineStockIds,
+                dishIds == null ? List.of() : dishIds,
+                lastFilter,
+                java.time.Instant.now()
+        );
+        conversationStore.save(clientId, ctx);
+    }
+
+    private List<String> appendCap(List<String> src, String val, int cap) {
+        if (val == null || val.isBlank()) return (src == null ? List.of() : src);
+        ArrayList<String> out = new ArrayList<>(src == null ? List.of() : src);
+        out.add(val);
+        if (out.size() > cap) {
+            out = new ArrayList<>(out.subList(out.size() - cap, out.size()));
+        }
+        return out;
     }
 
     private String resolveSectionName(String userText) {
@@ -298,10 +441,9 @@ public class SommelierServiceImpl implements SommelierService {
         if (tagContains(tagNames, "голландский соус")) return "chablis";
 
         if (high(fatLevel)) {
-            return (chosenColor == null || "white".equals(chosenColor))
-                    ? "riesling" : "pinot noir";
+            return (chosenColor == null || "white".equals(chosenColor)) ? "riesling" : "pinot noir";
         }
-        if (high(spiceLevel)) return "gewürztraminer";
+        if (high(spiceLevel)) return "gewürзtraminer".replace('з', 's'); // keep ascii spelling: gewürztraminer
         if ("grilled".equals(cookWay)) return "syrah";
         if ("raw".equals(cookWay) && "fish_fatty".equals(protein)) return "sauvignon blanc";
 
