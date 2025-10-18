@@ -14,30 +14,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Spin up Postgres as a service container
     services:
       postgres:
         image: postgres:16
         env:
           POSTGRES_DB: topwine
-          POSTGRES_USER: ${{ secrets.CI_DB_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+          POSTGRES_USER: topwine         # literals are fine for CI-only container
+          POSTGRES_PASSWORD: topwine
         options: >-
-          --health-cmd="pg_isready -U ${{ secrets.CI_DB_USER }} -d topwine"
+          --health-cmd="pg_isready -U topwine -d topwine"
           --health-interval=5s
           --health-timeout=3s
           --health-retries=10
         ports:
           - 5432:5432
 
-    # These env vars are read by your Spring config and jOOQ codegen
     env:
       SPRING_PROFILES_ACTIVE: dev
       DB_HOST: localhost
       DB_PORT: 5432
       DB_NAME: topwine
-      DB_USER: ${{ secrets.CI_DB_USER }}
-      DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+      DB_USER: topwine                  # must match service env above
+      DB_PASSWORD: topwine
 
     steps:
       - name: Checkout
@@ -55,7 +53,7 @@ jobs:
           sed -i 's/\r$//' gradlew
           chmod +x gradlew
 
-      # (Optional) Extra wait loop; services.healthcheck usually suffices
+      # Optional extra wait (healthcheck usually enough)
       - name: Wait for Postgres (extra safety)
         run: |
           for i in {1..30}; do
@@ -63,7 +61,7 @@ jobs:
             echo "Waiting for Postgres..."; sleep 2
           done
 
-      - name: Gradle build (includes jOOQ codegen)
+      - name: Build (includes jOOQ codegen) + tests
         run: ./gradlew --no-daemon clean generateJooq test build
 
       - name: Upload test report
